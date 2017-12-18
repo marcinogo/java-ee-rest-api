@@ -3,6 +3,7 @@ package com.codecool.krk.oni.servlets;
 import com.codecool.krk.oni.dao.SalesmanDao;
 import com.codecool.krk.oni.exceptions.DaoException;
 import com.codecool.krk.oni.models.Salesman;
+import org.json.JSONArray;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,9 +23,11 @@ public class SalesmanServlet extends HttpServlet {
         } catch (DaoException e) {
             e.printStackTrace();
         }
+        JSONArray array = new JSONArray();
+        array.put(salesman.toJSON());
+        array.put(salesman.toJSON());
 
-
-        response.getWriter().write(salesman.toJSON().toString());
+        response.getWriter().write(array.toString());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
