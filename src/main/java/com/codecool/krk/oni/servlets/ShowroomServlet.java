@@ -1,4 +1,4 @@
-package com.codecool.krk.oni;
+package com.codecool.krk.oni.servlets;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -7,23 +7,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/salesmen/*"})
-public class SalesmanServlet extends HttpServlet {
+@WebServlet(urlPatterns = {"/showrooms/*"})
+public class ShowroomServlet extends HttpServlet {
 
     protected void doGet( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().write("salesman");
+        response.getWriter().write("showroom");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        response.getWriter().write("salesman");
+        response.getWriter().write("showroom");
     }
 
     protected void doPut( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().write("salesman");
+        response.getWriter().write("showroom");
     }
 
     protected void doDelete( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().write("salesman");
+        response.getWriter().write("showroom");
     }
 }
