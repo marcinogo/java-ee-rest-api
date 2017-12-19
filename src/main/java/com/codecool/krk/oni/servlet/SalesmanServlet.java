@@ -22,7 +22,7 @@ public class SalesmanServlet extends HttpServlet {
 
         try {
             SalesmanDao salesmanDao = new SalesmanDao();
-            String content = null;
+            String content;
             if (idString == null) {
                 content = getAllSalemenJSON(salesmanDao);
             } else {
