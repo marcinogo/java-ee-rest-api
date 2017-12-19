@@ -23,7 +23,8 @@ public class Salesman {
     }
 
     public String toString() {
-        return String.format("id: %d. %s", this.getId(), this.getName());
+        return String.format("id: %d. name: %s, salary: %d, birth_year",
+                this.id, this.name, this.salary, this.birthYear);
     }
 
     /*public void save() throws DaoException {
