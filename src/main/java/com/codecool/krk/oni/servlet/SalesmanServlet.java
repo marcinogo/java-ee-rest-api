@@ -2,7 +2,9 @@ package com.codecool.krk.oni.servlet;
 
 import com.codecool.krk.oni.dao.SalesmanDao;
 import com.codecool.krk.oni.exception.DaoException;
+import com.codecool.krk.oni.exception.NoSuchSalesmanException;
 import com.codecool.krk.oni.model.Salesman;
+import com.codecool.krk.oni.service.SalesmanService;
 import org.json.JSONArray;
 
 import javax.servlet.ServletException;
@@ -21,21 +23,12 @@ public class SalesmanServlet extends HttpServlet {
         response.setContentType("application/json");
 
         try {
-            SalesmanDao salesmanDao = new SalesmanDao();
-            String content;
-            if (idString == null) {
-                content = getAllSalesmenJSON(salesmanDao);
-            } else {
-                content = getSalesmanJSON(salesmanDao, Integer.valueOf(idString));
-            }
-
-            if (content != null) {
-                response.getWriter().write(content);
-            } else {
-                send404(response, "Error 404: There is no salesman of such id");
-            }
-
+            SalesmanService salesmanService = new SalesmanService();
+            response.getWriter().write(salesmanService.getSalesman(idString));
         } catch (DaoException e) {
+            e.printStackTrace();
+        } catch (NoSuchSalesmanException e) {
+            send404(response, String.format("Error 404: %s", e.getMessage()));
             e.printStackTrace();
         }
     }
