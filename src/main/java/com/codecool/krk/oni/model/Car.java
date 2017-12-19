@@ -9,24 +9,24 @@ public class Car {
     private String color;
     // Change to Integer in db and here
     private String yearOfProduction;
-    private Integer showroomId;
+    private Showroom showroom;
 
     public Car(Integer id, String manufacturer, String model, String color,
-               String yearOfProduction, Integer showroomId) {
+               String yearOfProduction, Showroom showroom) {
         this.id = id;
         this.manufacturer = manufacturer;
         this.model = model;
         this.color = color;
         this.yearOfProduction = yearOfProduction;
-        this.showroomId = showroomId;
+        this.showroom = showroom;
     }
 
-    public Car(String manufacturer, String model, String color, String yearOfProduction, Integer showroomId) {
+    public Car(String manufacturer, String model, String color, String yearOfProduction, Showroom showroom) {
         this.manufacturer = manufacturer;
         this.model = model;
         this.color = color;
         this.yearOfProduction = yearOfProduction;
-        this.showroomId = showroomId;
+        this.showroom = showroom;
     }
 
     public Integer getId() {
@@ -69,17 +69,17 @@ public class Car {
         this.yearOfProduction = yearOfProduction;
     }
 
-    public Integer getShowroomId() {
-        return showroomId;
+    public Showroom getShowroom() {
+        return showroom;
     }
 
-    public void setShowroomId(Integer showroomId) {
-        this.showroomId = showroomId;
+    public void setShowroom(Showroom showroom) {
+        this.showroom = showroom;
     }
 
     public String toString() {
         return String.format("id: %d. manufacturer: %, model: %s, color: %s, year_of_production: %s, showroom_id: %d",
-                this.id, this.manufacturer, this.model, this.color, this.yearOfProduction, this.showroomId);
+                this.id, this.manufacturer, this.model, this.color, this.yearOfProduction, this.showroom.getId());
     }
 
     public JSONObject toJSON() {
@@ -89,7 +89,7 @@ public class Car {
         jsonCar.put("model", this.model);
         jsonCar.put("color", this.color);
         jsonCar.put("year_of_production", this.yearOfProduction);
-        jsonCar.put("showroom_id", this.showroomId);
+        jsonCar.put("showroom_id", this.showroom.getId());
         return jsonCar;
     }
 }
