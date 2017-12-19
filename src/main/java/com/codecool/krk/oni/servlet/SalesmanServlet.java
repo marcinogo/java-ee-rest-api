@@ -41,14 +41,23 @@ public class SalesmanServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Salesman salesman = new Salesman("Maciej", 20000, 1984);
-        try {
-            SalesmanDao salesmanDao = new SalesmanDao();
-            salesmanDao.save(salesman);
-        } catch (DaoException e) {
-            e.printStackTrace();
+        String name = request.getParameter("name");
+        String salary = request.getParameter("salary");
+        String birthYear = request.getParameter("birth_year");
+
+        if (name == null || salary == null || birthYear == null) {
+            send400(response, "400: No complete data to add new salesman");
+        } else {
+            Salesman salesman = new Salesman(name, Integer.valueOf(salary), Integer.valueOf(birthYear));
+
+            try {
+                SalesmanDao salesmanDao = new SalesmanDao();
+                salesmanDao.save(salesman);
+                send200(response, "200: Add new salesman to database");
+            } catch (DaoException e) {
+                e.printStackTrace();
+            }
         }
-        response.getWriter().write("salesman");
     }
 
     protected void doPut( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -108,6 +117,12 @@ public class SalesmanServlet extends HttpServlet {
 
     private void send200(HttpServletResponse response, String message) throws IOException {
         response.setStatus(200);
+        response.setContentType("text/plain");
+        response.getWriter().write(message);
+    }
+
+    private void send400(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(400);
         response.setContentType("text/plain");
         response.getWriter().write(message);
     }
