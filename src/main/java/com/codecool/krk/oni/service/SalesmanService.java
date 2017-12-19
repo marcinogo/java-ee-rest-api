@@ -15,7 +15,7 @@ public class SalesmanService {
     }
 
     public String getSalesman(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException {
-        String content = null;
+        String content;
 
         if (idString == null) {
             content = getAllSalesmenJSON();
@@ -69,8 +69,7 @@ public class SalesmanService {
 
     private String getSalesmanJSON(Integer id) throws DaoException, NoSuchSalesmanException {
         Salesman salesman = getSalesman(id);
-        String content = salesman.toJSON().toString();
-        return content;
+        return salesman.toJSON().toString();
     }
 
     private Salesman getSalesman(Integer id) throws DaoException, NoSuchSalesmanException {
