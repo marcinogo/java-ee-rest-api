@@ -114,6 +114,7 @@ public class SalesmanDao {
             stmt.setString(1, name);
             stmt.setInt(2, salary);
             stmt.setInt(3, birthYear);
+            stmt.setInt(4, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(this.getClass().getName() + " class caused a problem!");
