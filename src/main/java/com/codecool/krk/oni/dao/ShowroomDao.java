@@ -51,7 +51,7 @@ public class ShowroomDao {
         return new Showroom(id, name, address);
     }
 
-    public ArrayList<Showroom> getAllSalesmen() throws DaoException {
+    public ArrayList<Showroom> getAllShowrooms() throws DaoException {
 
         ArrayList<Showroom> foundShowrooms = new ArrayList<>();
         String sqlQuery = "SELECT * FROM showrooms";
