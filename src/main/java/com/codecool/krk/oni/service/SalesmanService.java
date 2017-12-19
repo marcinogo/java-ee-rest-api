@@ -20,8 +20,7 @@ public class SalesmanService {
         if (idString == null) {
             content = getAllSalesmenJSON();
         } else {
-            Integer id = Integer.parseInt(idString);
-            content = getSalesmanJSON(id);
+            content = getSalesmanJSON(Integer.parseInt(idString));
         }
         return content;
     }
@@ -33,6 +32,22 @@ public class SalesmanService {
         }
         Salesman salesman = new Salesman(name, Integer.parseInt(salary), Integer.parseInt(birthYear));
         salesmanDao.save(salesman);
+    }
+
+    public void putSalesman(String idString, String name, String salary, String birthYear) throws NumberFormatException,
+            NoSuchSalesmanException, NoCompleteDataProvideException, DaoException {
+        if (idString == null) {
+            throw new NoSuchSalesmanException("Salesman id not specified");
+        }
+
+        if (name == null || salary == null || birthYear == null) {
+            throw new NoCompleteDataProvideException("No all date for update salesman provided");
+        }
+
+        Salesman salesman = getSalesman(Integer.parseInt(idString));
+
+        updateSalesman(salesman, name, salary, birthYear);
+        salesmanDao.update(salesman);
     }
 
     public void deleteSalesman(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException {
@@ -65,5 +80,11 @@ public class SalesmanService {
             throw new NoSuchSalesmanException(String.format("No salesman with id %d in database", id));
         }
         return salesman;
+    }
+
+    private void updateSalesman(Salesman salesman, String name, String salary, String birthYear) throws NumberFormatException {
+        salesman.setName(name);
+        salesman.setSalary(Integer.parseInt(salary));
+        salesman.setBirthYear(Integer.parseInt(birthYear));
     }
 }
