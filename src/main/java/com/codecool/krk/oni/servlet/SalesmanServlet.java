@@ -22,17 +22,17 @@ public class SalesmanServlet extends HttpServlet {
 
         try {
             SalesmanDao salesmanDao = new SalesmanDao();
-            String content = null;
+            String content;
             if (idString == null) {
-                content = getAllSalemen(salesmanDao);
+                content = getAllSalemenJSON(salesmanDao);
             } else {
-                content = getSaleman(salesmanDao, Integer.valueOf(idString));
+                content = getSalemanJSON(salesmanDao, Integer.valueOf(idString));
             }
 
             if (content != null) {
                 response.getWriter().write(content);
             } else {
-                send404(response);
+                send404(response, "Error 404: There is no salesman of such id");
             }
 
         } catch (DaoException e) {
@@ -63,16 +63,22 @@ public class SalesmanServlet extends HttpServlet {
     }
 
     protected void doDelete( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String idString = request.getParameter("id");
+
         try {
             SalesmanDao salesmanDao = new SalesmanDao();
-            salesmanDao.delete(5);
+            if (getSaleman(salesmanDao, Integer.valueOf(idString)) != null) {
+                salesmanDao.delete(Integer.valueOf(idString));
+                send200(response, String.format("200: Saleman with id: %s deleted", idString));
+            } else {
+                send404(response, "404: No such salesman in database");
+            }
         } catch (DaoException e) {
             e.printStackTrace();
         }
-        response.getWriter().write("salesman");
     }
 
-    private String getAllSalemen(SalesmanDao salesmanDao) throws DaoException {
+    private String getAllSalemenJSON(SalesmanDao salesmanDao) throws DaoException {
         JSONArray array = new JSONArray();
         for (Salesman salesman: salesmanDao.getAllSalesmen()) {
             array.put(salesman.toJSON());
@@ -80,9 +86,9 @@ public class SalesmanServlet extends HttpServlet {
         return array.toString();
     }
 
-    private String getSaleman(SalesmanDao salesmanDao, Integer id) throws DaoException {
+    private String getSalemanJSON(SalesmanDao salesmanDao, Integer id) throws DaoException {
         String content = null;
-        Salesman salesman = salesmanDao.getSalesman(id);
+        Salesman salesman = getSaleman(salesmanDao, id);
         if (salesman != null) {
             content = salesman.toJSON().toString();
         }
@@ -90,9 +96,19 @@ public class SalesmanServlet extends HttpServlet {
         return content;
     }
 
-    private void send404(HttpServletResponse response) throws IOException {
+    private Salesman getSaleman(SalesmanDao salesmanDao, Integer id) throws DaoException{
+        return salesmanDao.getSalesman(id);
+    }
+
+    private void send404(HttpServletResponse response, String message) throws IOException {
         response.setStatus(404);
         response.setContentType("text/plain");
-        response.getWriter().write("Error 404: There is no salesman of such id");
+        response.getWriter().write(message);
+    }
+
+    private void send200(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(200);
+        response.setContentType("text/plain");
+        response.getWriter().write(message);
     }
 }
