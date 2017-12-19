@@ -60,15 +60,29 @@ public class SalesmanServlet extends HttpServlet {
         }
     }
 
-    protected void doPut( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Salesman salesman = new Salesman(1,"John Smith", 20000, 1984);
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String idString = request.getParameter("id");
+        String name = request.getParameter("name");
+        String salary = request.getParameter("salary");
+        String birthYear = request.getParameter("birth_year");
+
         try {
             SalesmanDao salesmanDao = new SalesmanDao();
-            salesmanDao.update(salesman);
+            if (idString == null) {
+                send400(response, "400: No complete data to update salesman");
+            } else {
+                Salesman salesman = getSalesman(salesmanDao, Integer.valueOf(idString));
+                if (salesman == null || name == null || salary == null || birthYear == null) {
+                    send400(response, "400: No complete data to update salesman");
+                } else {
+                    updateSalesman(salesman, name, salary, birthYear);
+                    salesmanDao.update(salesman);
+                    send200(response, String.format("200: Update salesman with id %s", idString));
+                }
+            }
         } catch (DaoException e) {
             e.printStackTrace();
         }
-        response.getWriter().write("salesman");
     }
 
     protected void doDelete( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -76,11 +90,15 @@ public class SalesmanServlet extends HttpServlet {
 
         try {
             SalesmanDao salesmanDao = new SalesmanDao();
-            if (getSalesman(salesmanDao, Integer.valueOf(idString)) != null) {
-                salesmanDao.delete(Integer.valueOf(idString));
-                send200(response, String.format("200: Saleman with id: %s deleted", idString));
+            if (idString == null) {
+                send400(response, "400: No complete data to delete salesman");
             } else {
-                send404(response, "404: No such salesman in database");
+                if (getSalesman(salesmanDao, Integer.valueOf(idString)) != null) {
+                    salesmanDao.delete(Integer.valueOf(idString));
+                    send200(response, String.format("200: Salesman with id: %s deleted", idString));
+                } else {
+                    send404(response, "404: No such salesman in database");
+                }
             }
         } catch (DaoException e) {
             e.printStackTrace();
@@ -109,10 +127,10 @@ public class SalesmanServlet extends HttpServlet {
         return salesmanDao.getSalesman(id);
     }
 
-    private void send404(HttpServletResponse response, String message) throws IOException {
-        response.setStatus(404);
-        response.setContentType("text/plain");
-        response.getWriter().write(message);
+    private void updateSalesman(Salesman salesman, String name, String salary, String birthYear) {
+        salesman.setName(name);
+        salesman.setSalary(Integer.valueOf(salary));
+        salesman.setBirthYear(Integer.valueOf(birthYear));
     }
 
     private void send200(HttpServletResponse response, String message) throws IOException {
@@ -123,6 +141,12 @@ public class SalesmanServlet extends HttpServlet {
 
     private void send400(HttpServletResponse response, String message) throws IOException {
         response.setStatus(400);
+        response.setContentType("text/plain");
+        response.getWriter().write(message);
+    }
+
+    private void send404(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(404);
         response.setContentType("text/plain");
         response.getWriter().write(message);
     }
