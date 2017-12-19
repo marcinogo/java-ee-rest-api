@@ -2,7 +2,9 @@ package com.codecool.krk.oni.servlet;
 
 import com.codecool.krk.oni.dao.SalesmanDao;
 import com.codecool.krk.oni.exception.DaoException;
+import com.codecool.krk.oni.exception.NoSuchSalesmanException;
 import com.codecool.krk.oni.model.Salesman;
+import com.codecool.krk.oni.service.SalesmanService;
 import org.json.JSONArray;
 
 import javax.servlet.ServletException;
@@ -21,22 +23,15 @@ public class SalesmanServlet extends HttpServlet {
         response.setContentType("application/json");
 
         try {
-            SalesmanDao salesmanDao = new SalesmanDao();
-            String content;
-            if (idString == null) {
-                content = getAllSalesmenJSON(salesmanDao);
-            } else {
-                content = getSalesmanJSON(salesmanDao, Integer.valueOf(idString));
-            }
-
-            if (content != null) {
-                response.getWriter().write(content);
-            } else {
-                send404(response, "Error 404: There is no salesman of such id");
-            }
-
+            SalesmanService salesmanService = new SalesmanService();
+            response.getWriter().write(salesmanService.getSalesman(idString));
         } catch (DaoException e) {
             e.printStackTrace();
+        } catch (NoSuchSalesmanException e) {
+            send404(response, String.format("404: %s", e.getMessage()));
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            send400(response, "400: Wrong format of salesman id given");
         }
     }
 
@@ -89,19 +84,16 @@ public class SalesmanServlet extends HttpServlet {
         String idString = request.getParameter("id");
 
         try {
-            SalesmanDao salesmanDao = new SalesmanDao();
-            if (idString == null) {
-                send400(response, "400: No complete data to delete salesman");
-            } else {
-                if (getSalesman(salesmanDao, Integer.valueOf(idString)) != null) {
-                    salesmanDao.delete(Integer.valueOf(idString));
-                    send200(response, String.format("200: Salesman with id: %s deleted", idString));
-                } else {
-                    send404(response, "404: No such salesman in database");
-                }
-            }
+            SalesmanService salesmanService = new SalesmanService();
+            salesmanService.deleteSalesman(idString);
+            send200(response, String.format("200: Delete salesman with id %s from database", idString));
         } catch (DaoException e) {
             e.printStackTrace();
+        } catch (NoSuchSalesmanException e) {
+            send404(response, String.format("404: %s", e.getMessage()));
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            send400(response, "400: Wrong format of salesman id given");
         }
     }
 
