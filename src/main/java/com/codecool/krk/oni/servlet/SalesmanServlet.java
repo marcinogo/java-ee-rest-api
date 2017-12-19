@@ -28,8 +28,10 @@ public class SalesmanServlet extends HttpServlet {
         } catch (DaoException e) {
             e.printStackTrace();
         } catch (NoSuchSalesmanException e) {
-            send404(response, String.format("Error 404: %s", e.getMessage()));
+            send404(response, String.format("404: %s", e.getMessage()));
             e.printStackTrace();
+        } catch (NumberFormatException e) {
+            send400(response, "400: Wrong format of salesman id given");
         }
     }
 
@@ -82,19 +84,15 @@ public class SalesmanServlet extends HttpServlet {
         String idString = request.getParameter("id");
 
         try {
-            SalesmanDao salesmanDao = new SalesmanDao();
-            if (idString == null) {
-                send400(response, "400: No complete data to delete salesman");
-            } else {
-                if (getSalesman(salesmanDao, Integer.valueOf(idString)) != null) {
-                    salesmanDao.delete(Integer.valueOf(idString));
-                    send200(response, String.format("200: Salesman with id: %s deleted", idString));
-                } else {
-                    send404(response, "404: No such salesman in database");
-                }
-            }
+            SalesmanService salesmanService = new SalesmanService();
+            salesmanService.deleteSalesman(idString);
         } catch (DaoException e) {
             e.printStackTrace();
+        } catch (NoSuchSalesmanException e) {
+            send404(response, String.format("404: %s", e.getMessage()));
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            send400(response, "400: Wrong format of salesman id given");
         }
     }
 
