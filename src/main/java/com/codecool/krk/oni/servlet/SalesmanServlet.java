@@ -66,16 +66,19 @@ public class SalesmanServlet extends HttpServlet {
         String salary = request.getParameter("salary");
         String birthYear = request.getParameter("birth_year");
 
-
         try {
             SalesmanDao salesmanDao = new SalesmanDao();
-            Salesman salesman = getSalesman(salesmanDao, Integer.valueOf(idString));
-            if (salesman == null || name == null || salary == null || birthYear == null) {
-                send400(response, "400: No complete data to add new salesman");
+            if (idString == null) {
+                send400(response, "400: No complete data to update salesman");
             } else {
-                updateSalesman(salesman, name, salary, birthYear);
-                salesmanDao.update(salesman);
-                send200(response, String.format("200: Update salesman with id %s", idString));
+                Salesman salesman = getSalesman(salesmanDao, Integer.valueOf(idString));
+                if (salesman == null || name == null || salary == null || birthYear == null) {
+                    send400(response, "400: No complete data to update salesman");
+                } else {
+                    updateSalesman(salesman, name, salary, birthYear);
+                    salesmanDao.update(salesman);
+                    send200(response, String.format("200: Update salesman with id %s", idString));
+                }
             }
         } catch (DaoException e) {
             e.printStackTrace();
@@ -87,11 +90,15 @@ public class SalesmanServlet extends HttpServlet {
 
         try {
             SalesmanDao salesmanDao = new SalesmanDao();
-            if (getSalesman(salesmanDao, Integer.valueOf(idString)) != null) {
-                salesmanDao.delete(Integer.valueOf(idString));
-                send200(response, String.format("200: Saleman with id: %s deleted", idString));
+            if (idString == null) {
+                send400(response, "400: No complete data to delete salesman");
             } else {
-                send404(response, "404: No such salesman in database");
+                if (getSalesman(salesmanDao, Integer.valueOf(idString)) != null) {
+                    salesmanDao.delete(Integer.valueOf(idString));
+                    send200(response, String.format("200: Salesman with id: %s deleted", idString));
+                } else {
+                    send404(response, "404: No such salesman in database");
+                }
             }
         } catch (DaoException e) {
             e.printStackTrace();
