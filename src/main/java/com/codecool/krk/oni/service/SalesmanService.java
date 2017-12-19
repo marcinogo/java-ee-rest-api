@@ -25,6 +25,15 @@ public class SalesmanService {
         return content;
     }
 
+    public void deleteSalesman(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException {
+        if (idString == null) {
+            throw new NoSuchSalesmanException("Salesman id not specified");
+        }
+        Integer id = Integer.parseInt(idString);
+        getSalesman(id);
+        this.salesmanDao.delete(id);
+    }
+
     private String getAllSalesmenJSON() throws DaoException {
         JSONArray array = new JSONArray();
         for (Salesman salesman: this.salesmanDao.getAllSalesmen()) {
