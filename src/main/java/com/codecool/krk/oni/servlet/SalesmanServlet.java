@@ -16,18 +16,28 @@ import java.io.IOException;
 public class SalesmanServlet extends HttpServlet {
 
     protected void doGet( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Salesman salesman = null;
+        String idString = request.getParameter("id");
+
+        response.setContentType("application/json");
+
         try {
             SalesmanDao salesmanDao = new SalesmanDao();
-            salesman = salesmanDao.getSalesman(1);
+            String content = null;
+            if (idString == null) {
+                content = getAllSalemen(salesmanDao);
+            } else {
+                content = getSaleman(salesmanDao, Integer.valueOf(idString));
+            }
+
+            if (content != null) {
+                response.getWriter().write(content);
+            } else {
+                send404(response);
+            }
+
         } catch (DaoException e) {
             e.printStackTrace();
         }
-        JSONArray array = new JSONArray();
-        array.put(salesman.toJSON());
-        array.put(salesman.toJSON());
-
-        response.getWriter().write(array.toString());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -60,5 +70,29 @@ public class SalesmanServlet extends HttpServlet {
             e.printStackTrace();
         }
         response.getWriter().write("salesman");
+    }
+
+    private String getAllSalemen(SalesmanDao salesmanDao) throws DaoException {
+        JSONArray array = new JSONArray();
+        for (Salesman salesman: salesmanDao.getAllSalesmen()) {
+            array.put(salesman.toJSON());
+        }
+        return array.toString();
+    }
+
+    private String getSaleman(SalesmanDao salesmanDao, Integer id) throws DaoException {
+        String content = null;
+        Salesman salesman = salesmanDao.getSalesman(id);
+        if (salesman != null) {
+            content = salesman.toJSON().toString();
+        }
+
+        return content;
+    }
+
+    private void send404(HttpServletResponse response) throws IOException {
+        response.setStatus(404);
+        response.setContentType("text/plain");
+        response.getWriter().write("Error 404: There is no salesman of such id");
     }
 }
