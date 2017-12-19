@@ -1,12 +1,9 @@
 package com.codecool.krk.oni.servlet;
 
-import com.codecool.krk.oni.dao.SalesmanDao;
 import com.codecool.krk.oni.exception.DaoException;
 import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
 import com.codecool.krk.oni.exception.NoSuchSalesmanException;
-import com.codecool.krk.oni.model.Salesman;
 import com.codecool.krk.oni.service.SalesmanService;
-import org.json.JSONArray;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
