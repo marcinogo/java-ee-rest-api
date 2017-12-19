@@ -2,6 +2,7 @@ package com.codecool.krk.oni.servlet;
 
 import com.codecool.krk.oni.dao.SalesmanDao;
 import com.codecool.krk.oni.exception.DaoException;
+import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
 import com.codecool.krk.oni.exception.NoSuchSalesmanException;
 import com.codecool.krk.oni.model.Salesman;
 import com.codecool.krk.oni.service.SalesmanService;
@@ -41,18 +42,18 @@ public class SalesmanServlet extends HttpServlet {
         String salary = request.getParameter("salary");
         String birthYear = request.getParameter("birth_year");
 
-        if (name == null || salary == null || birthYear == null) {
-            send400(response, "400: No complete data to add new salesman");
-        } else {
-            Salesman salesman = new Salesman(name, Integer.valueOf(salary), Integer.valueOf(birthYear));
-
-            try {
-                SalesmanDao salesmanDao = new SalesmanDao();
-                salesmanDao.save(salesman);
-                send200(response, "200: Add new salesman to database");
-            } catch (DaoException e) {
-                e.printStackTrace();
-            }
+        try {
+            SalesmanService salesmanService = new SalesmanService();
+            salesmanService.postSalesman(name, salary, birthYear);
+            send200(response, "200: Add new salesman to database");
+        } catch (DaoException e) {
+            e.printStackTrace();
+        } catch (NoCompleteDataProvideException e) {
+            send400(response, String.format("400: %s", e.getMessage()));
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            send400(response, "400: Wrong format of numeric data for new salesman provided");
+            e.printStackTrace();
         }
     }
 
