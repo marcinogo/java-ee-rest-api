@@ -1,4 +1,4 @@
-package com.codecool.krk.oni.exceptions;
+package com.codecool.krk.oni.exception;
 
 public class DaoException extends Exception {
 

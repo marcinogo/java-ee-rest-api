@@ -1,8 +1,8 @@
-package com.codecool.krk.oni.servlets;
+package com.codecool.krk.oni.servlet;
 
 import com.codecool.krk.oni.dao.SalesmanDao;
-import com.codecool.krk.oni.exceptions.DaoException;
-import com.codecool.krk.oni.models.Salesman;
+import com.codecool.krk.oni.exception.DaoException;
+import com.codecool.krk.oni.model.Salesman;
 import org.json.JSONArray;
 
 import javax.servlet.ServletException;

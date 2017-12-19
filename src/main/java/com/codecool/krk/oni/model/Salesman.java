@@ -1,6 +1,5 @@
-package com.codecool.krk.oni.models;
+package com.codecool.krk.oni.model;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Salesman {

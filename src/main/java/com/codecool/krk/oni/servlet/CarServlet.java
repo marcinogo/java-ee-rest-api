@@ -1,4 +1,4 @@
-package com.codecool.krk.oni.servlets;
+package com.codecool.krk.oni.servlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

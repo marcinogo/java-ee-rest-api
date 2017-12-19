@@ -1,6 +1,6 @@
 package com.codecool.krk.oni.dao;
 
-import com.codecool.krk.oni.exceptions.DaoException;
+import com.codecool.krk.oni.exception.DaoException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
