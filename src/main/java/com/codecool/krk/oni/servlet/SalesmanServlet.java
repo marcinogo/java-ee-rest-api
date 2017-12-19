@@ -1,11 +1,9 @@
 package com.codecool.krk.oni.servlet;
 
-import com.codecool.krk.oni.dao.SalesmanDao;
 import com.codecool.krk.oni.exception.DaoException;
+import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
 import com.codecool.krk.oni.exception.NoSuchSalesmanException;
-import com.codecool.krk.oni.model.Salesman;
 import com.codecool.krk.oni.service.SalesmanService;
-import org.json.JSONArray;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,6 +30,7 @@ public class SalesmanServlet extends HttpServlet {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             send400(response, "400: Wrong format of salesman id given");
+            e.printStackTrace();
         }
     }
 
@@ -40,18 +39,18 @@ public class SalesmanServlet extends HttpServlet {
         String salary = request.getParameter("salary");
         String birthYear = request.getParameter("birth_year");
 
-        if (name == null || salary == null || birthYear == null) {
-            send400(response, "400: No complete data to add new salesman");
-        } else {
-            Salesman salesman = new Salesman(name, Integer.valueOf(salary), Integer.valueOf(birthYear));
-
-            try {
-                SalesmanDao salesmanDao = new SalesmanDao();
-                salesmanDao.save(salesman);
-                send200(response, "200: Add new salesman to database");
-            } catch (DaoException e) {
-                e.printStackTrace();
-            }
+        try {
+            SalesmanService salesmanService = new SalesmanService();
+            salesmanService.postSalesman(name, salary, birthYear);
+            send200(response, "200: Add new salesman to database");
+        } catch (DaoException e) {
+            e.printStackTrace();
+        } catch (NoCompleteDataProvideException e) {
+            send400(response, String.format("400: %s", e.getMessage()));
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            send400(response, "400: Wrong format of numeric data for new salesman provided");
+            e.printStackTrace();
         }
     }
 
@@ -62,20 +61,19 @@ public class SalesmanServlet extends HttpServlet {
         String birthYear = request.getParameter("birth_year");
 
         try {
-            SalesmanDao salesmanDao = new SalesmanDao();
-            if (idString == null) {
-                send400(response, "400: No complete data to update salesman");
-            } else {
-                Salesman salesman = getSalesman(salesmanDao, Integer.valueOf(idString));
-                if (salesman == null || name == null || salary == null || birthYear == null) {
-                    send400(response, "400: No complete data to update salesman");
-                } else {
-                    updateSalesman(salesman, name, salary, birthYear);
-                    salesmanDao.update(salesman);
-                    send200(response, String.format("200: Update salesman with id %s", idString));
-                }
-            }
+            SalesmanService salesmanService = new SalesmanService();
+            salesmanService.putSalesman(idString, name, salary, birthYear);
+            send200(response, String.format("200: Update salesman with id %s in database", idString));
         } catch (DaoException e) {
+            e.printStackTrace();
+        } catch (NoSuchSalesmanException e) {
+            send404(response, String.format("404: %s", e.getMessage()));
+            e.printStackTrace();
+        } catch (NoCompleteDataProvideException e) {
+            send400(response, String.format("400: %s", e.getMessage()));
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            send400(response, "400: Wrong format of numeric data for update salesman provided");
             e.printStackTrace();
         }
     }
@@ -94,35 +92,8 @@ public class SalesmanServlet extends HttpServlet {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             send400(response, "400: Wrong format of salesman id given");
+            e.printStackTrace();
         }
-    }
-
-    private String getAllSalesmenJSON(SalesmanDao salesmanDao) throws DaoException {
-        JSONArray array = new JSONArray();
-        for (Salesman salesman: salesmanDao.getAllSalesmen()) {
-            array.put(salesman.toJSON());
-        }
-        return array.toString();
-    }
-
-    private String getSalesmanJSON(SalesmanDao salesmanDao, Integer id) throws DaoException {
-        String content = null;
-        Salesman salesman = getSalesman(salesmanDao, id);
-        if (salesman != null) {
-            content = salesman.toJSON().toString();
-        }
-
-        return content;
-    }
-
-    private Salesman getSalesman(SalesmanDao salesmanDao, Integer id) throws DaoException{
-        return salesmanDao.getSalesman(id);
-    }
-
-    private void updateSalesman(Salesman salesman, String name, String salary, String birthYear) {
-        salesman.setName(name);
-        salesman.setSalary(Integer.valueOf(salary));
-        salesman.setBirthYear(Integer.valueOf(birthYear));
     }
 
     private void send200(HttpServletResponse response, String message) throws IOException {
