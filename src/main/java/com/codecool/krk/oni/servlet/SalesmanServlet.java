@@ -86,6 +86,7 @@ public class SalesmanServlet extends HttpServlet {
         try {
             SalesmanService salesmanService = new SalesmanService();
             salesmanService.deleteSalesman(idString);
+            send200(response, String.format("200: Delete salesman with id %s from database", idString));
         } catch (DaoException e) {
             e.printStackTrace();
         } catch (NoSuchSalesmanException e) {
