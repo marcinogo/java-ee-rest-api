@@ -32,6 +32,7 @@ public class SalesmanServlet extends HttpServlet {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             send400(response, "400: Wrong format of salesman id given");
+            e.printStackTrace();
         }
     }
 
@@ -94,6 +95,7 @@ public class SalesmanServlet extends HttpServlet {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             send400(response, "400: Wrong format of salesman id given");
+            e.printStackTrace();
         }
     }
 
