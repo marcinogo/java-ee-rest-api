@@ -126,12 +126,6 @@ public class SalesmanServlet extends HttpServlet {
         salesman.setBirthYear(Integer.valueOf(birthYear));
     }
 
-    private void send404(HttpServletResponse response, String message) throws IOException {
-        response.setStatus(404);
-        response.setContentType("text/plain");
-        response.getWriter().write(message);
-    }
-
     private void send200(HttpServletResponse response, String message) throws IOException {
         response.setStatus(200);
         response.setContentType("text/plain");
@@ -140,6 +134,12 @@ public class SalesmanServlet extends HttpServlet {
 
     private void send400(HttpServletResponse response, String message) throws IOException {
         response.setStatus(400);
+        response.setContentType("text/plain");
+        response.getWriter().write(message);
+    }
+
+    private void send404(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(404);
         response.setContentType("text/plain");
         response.getWriter().write(message);
     }
