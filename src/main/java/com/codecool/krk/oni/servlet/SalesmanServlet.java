@@ -31,15 +31,34 @@ public class SalesmanServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        Salesman salesman = new Salesman("Maciej", 20000, 1984);
+        try {
+            SalesmanDao salesmanDao = new SalesmanDao();
+            salesmanDao.save(salesman);
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
         response.getWriter().write("salesman");
     }
 
     protected void doPut( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Salesman salesman = new Salesman(1,"John Smith", 20000, 1984);
+        try {
+            SalesmanDao salesmanDao = new SalesmanDao();
+            salesmanDao.update(salesman);
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
         response.getWriter().write("salesman");
     }
 
     protected void doDelete( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            SalesmanDao salesmanDao = new SalesmanDao();
+            salesmanDao.delete(5);
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
         response.getWriter().write("salesman");
     }
 }
