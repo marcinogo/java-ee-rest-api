@@ -2,6 +2,7 @@ package com.codecool.krk.oni.service;
 
 import com.codecool.krk.oni.dao.SalesmanDao;
 import com.codecool.krk.oni.exception.DaoException;
+import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
 import com.codecool.krk.oni.exception.NoSuchSalesmanException;
 import com.codecool.krk.oni.model.Salesman;
 import org.json.JSONArray;
@@ -23,6 +24,15 @@ public class SalesmanService {
             content = getSalesmanJSON(id);
         }
         return content;
+    }
+
+    public void postSalesman(String name, String salary, String birthYear) throws NumberFormatException,
+            NoCompleteDataProvideException, DaoException {
+        if (name == null || salary == null || birthYear == null) {
+            throw new NoCompleteDataProvideException("No all date for new salesman provided");
+        }
+        Salesman salesman = new Salesman(name, Integer.parseInt(salary), Integer.parseInt(birthYear));
+        salesmanDao.save(salesman);
     }
 
     public void deleteSalesman(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException {
