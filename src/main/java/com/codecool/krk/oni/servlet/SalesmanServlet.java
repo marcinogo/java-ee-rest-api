@@ -60,15 +60,26 @@ public class SalesmanServlet extends HttpServlet {
         }
     }
 
-    protected void doPut( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Salesman salesman = new Salesman(1,"John Smith", 20000, 1984);
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String idString = request.getParameter("id");
+        String name = request.getParameter("name");
+        String salary = request.getParameter("salary");
+        String birthYear = request.getParameter("birth_year");
+
+
         try {
             SalesmanDao salesmanDao = new SalesmanDao();
-            salesmanDao.update(salesman);
+            Salesman salesman = getSalesman(salesmanDao, Integer.valueOf(idString));
+            if (salesman == null || name == null || salary == null || birthYear == null) {
+                send400(response, "400: No complete data to add new salesman");
+            } else {
+                updateSalesman(salesman, name, salary, birthYear);
+                salesmanDao.update(salesman);
+                send200(response, String.format("200: Update salesman with id %s", idString));
+            }
         } catch (DaoException e) {
             e.printStackTrace();
         }
-        response.getWriter().write("salesman");
     }
 
     protected void doDelete( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -107,6 +118,12 @@ public class SalesmanServlet extends HttpServlet {
 
     private Salesman getSalesman(SalesmanDao salesmanDao, Integer id) throws DaoException{
         return salesmanDao.getSalesman(id);
+    }
+
+    private void updateSalesman(Salesman salesman, String name, String salary, String birthYear) {
+        salesman.setName(name);
+        salesman.setSalary(Integer.valueOf(salary));
+        salesman.setBirthYear(Integer.valueOf(birthYear));
     }
 
     private void send404(HttpServletResponse response, String message) throws IOException {
