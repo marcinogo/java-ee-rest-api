@@ -24,9 +24,9 @@ public class SalesmanServlet extends HttpServlet {
             SalesmanDao salesmanDao = new SalesmanDao();
             String content;
             if (idString == null) {
-                content = getAllSalemenJSON(salesmanDao);
+                content = getAllSalesmenJSON(salesmanDao);
             } else {
-                content = getSalemanJSON(salesmanDao, Integer.valueOf(idString));
+                content = getSalesmanJSON(salesmanDao, Integer.valueOf(idString));
             }
 
             if (content != null) {
@@ -76,7 +76,7 @@ public class SalesmanServlet extends HttpServlet {
 
         try {
             SalesmanDao salesmanDao = new SalesmanDao();
-            if (getSaleman(salesmanDao, Integer.valueOf(idString)) != null) {
+            if (getSalesman(salesmanDao, Integer.valueOf(idString)) != null) {
                 salesmanDao.delete(Integer.valueOf(idString));
                 send200(response, String.format("200: Saleman with id: %s deleted", idString));
             } else {
@@ -87,7 +87,7 @@ public class SalesmanServlet extends HttpServlet {
         }
     }
 
-    private String getAllSalemenJSON(SalesmanDao salesmanDao) throws DaoException {
+    private String getAllSalesmenJSON(SalesmanDao salesmanDao) throws DaoException {
         JSONArray array = new JSONArray();
         for (Salesman salesman: salesmanDao.getAllSalesmen()) {
             array.put(salesman.toJSON());
@@ -95,9 +95,9 @@ public class SalesmanServlet extends HttpServlet {
         return array.toString();
     }
 
-    private String getSalemanJSON(SalesmanDao salesmanDao, Integer id) throws DaoException {
+    private String getSalesmanJSON(SalesmanDao salesmanDao, Integer id) throws DaoException {
         String content = null;
-        Salesman salesman = getSaleman(salesmanDao, id);
+        Salesman salesman = getSalesman(salesmanDao, id);
         if (salesman != null) {
             content = salesman.toJSON().toString();
         }
@@ -105,7 +105,7 @@ public class SalesmanServlet extends HttpServlet {
         return content;
     }
 
-    private Salesman getSaleman(SalesmanDao salesmanDao, Integer id) throws DaoException{
+    private Salesman getSalesman(SalesmanDao salesmanDao, Integer id) throws DaoException{
         return salesmanDao.getSalesman(id);
     }
 
