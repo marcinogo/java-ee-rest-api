@@ -45,7 +45,7 @@ public class CarService {
 
         if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") ||
                 !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("yearOfProduction")) {
-            throw new NoCompleteDataProvideException("No all date for new car provided");
+            throw new NoCompleteDataProvideException("No all data for new car provided");
         }
 
         Integer year = Integer.parseInt((String) jsonCarMap.get("yearOfProduction"));
@@ -58,6 +58,31 @@ public class CarService {
 
     public void putObject(String json) throws ClassCastException,
             NoSuchCarException, NoSuchShowroomException, NoCompleteDataProvideException, DaoException, IOException {
+        Map<String, Object> jsonCarMap = objectMapper.readValue(json,
+                new TypeReference<Map<String,Object>>(){});
+
+        if (!jsonCarMap.containsKey("id")) {
+            throw new NoSuchCarException("Car id not specified");
+        }
+
+        if (!jsonCarMap.containsKey("showroom")) {
+            throw new NoCompleteDataProvideException("No showroom data for car update provided");
+        }
+
+        Map<String, Object> showroomJson = (Map<String, Object>) jsonCarMap.get("showroom");
+
+        if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") ||
+                !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("yearOfProduction")) {
+            throw new NoCompleteDataProvideException("No all data for car update provided");
+        }
+
+        Integer year = Integer.parseInt((String) jsonCarMap.get("yearOfProduction"));
+
+        Showroom showroom = getShowroom(showroomJson);
+        Car car = getCar((Integer) jsonCarMap.get("id"));
+
+        updateCar(car, jsonCarMap, showroom);
+        carDao.update(car);
     }
 
     public void deleteObject(String idString) throws NumberFormatException, NoSuchCarException, DaoException {
@@ -105,5 +130,13 @@ public class CarService {
             throw new NoSuchShowroomException("Not all data or wrong data for showroom provided");
         }
         return showroom;
+    }
+
+    private void updateCar(Car car, Map<String, Object> jsonCarMap, Showroom showroom) {
+        car.setManufacturer((String) jsonCarMap.get("manufacturer"));
+        car.setModel((String) jsonCarMap.get("model"));
+        car.setColor((String) jsonCarMap.get("color"));
+        car.setYearOfProduction((String) jsonCarMap.get("yearOfProduction"));
+        car.setShowroom(showroom);
     }
 }
