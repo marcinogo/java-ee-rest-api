@@ -39,7 +39,6 @@ public class SalesmanServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
         String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
@@ -51,23 +50,19 @@ public class SalesmanServlet extends HttpServlet {
         } catch (NoCompleteDataProvideException e) {
             send400(response, String.format("400: %s", e.getMessage()));
             e.printStackTrace();
-        } catch (NumberFormatException e) {
+        } catch (ClassCastException e) {
             send400(response, "400: Wrong format of numeric data for new salesman provided");
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idString = request.getParameter("id");
-        String name = request.getParameter("name");
-        String salary = request.getParameter("salary");
-        String birthYear = request.getParameter("birth_year");
+        String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
             SalesmanService salesmanService = new SalesmanService();
-            salesmanService.putSalesman(idString, name, salary, birthYear);
+            salesmanService.putSalesman(json);
             send200(response, String.format("200: Update salesman with id %s in database", idString));
         } catch (DaoException e) {
             e.printStackTrace();
@@ -77,7 +72,7 @@ public class SalesmanServlet extends HttpServlet {
         } catch (NoCompleteDataProvideException e) {
             send400(response, String.format("400: %s", e.getMessage()));
             e.printStackTrace();
-        } catch (NumberFormatException e) {
+        } catch (ClassCastException e) {
             send400(response, "400: Wrong format of numeric data for update salesman provided");
             e.printStackTrace();
         }
