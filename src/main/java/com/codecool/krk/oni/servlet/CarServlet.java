@@ -61,7 +61,6 @@ public class CarServlet extends HttpServlet {
     }
 
     protected void doPut( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String idString = request.getParameter("id");
         String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {

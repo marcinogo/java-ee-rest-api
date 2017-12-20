@@ -57,13 +57,12 @@ public class SalesmanServlet extends HttpServlet {
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String idString = request.getParameter("id");
         String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
             SalesmanService salesmanService = new SalesmanService();
             salesmanService.putObject(json);
-            send200(response, String.format("200: Update salesman with id %s in database", idString));
+            send200(response,"200: Update salesman database");
         } catch (DaoException e) {
             e.printStackTrace();
         } catch (NoSuchSalesmanException e) {
