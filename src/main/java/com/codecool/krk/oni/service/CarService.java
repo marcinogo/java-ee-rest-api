@@ -2,10 +2,7 @@ package com.codecool.krk.oni.service;
 
 import com.codecool.krk.oni.dao.CarDao;
 import com.codecool.krk.oni.dao.ShowroomDao;
-import com.codecool.krk.oni.exception.DaoException;
-import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
-import com.codecool.krk.oni.exception.NoSuchSalesmanException;
-import com.codecool.krk.oni.exception.NoSuchShowroomException;
+import com.codecool.krk.oni.exception.*;
 import com.codecool.krk.oni.model.Car;
 import com.codecool.krk.oni.model.Showroom;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,7 +20,7 @@ public class CarService {
         this.carDao = new CarDao();
     }
 
-    public String getObject(String idString) throws NumberFormatException, NoSuchSalesmanException,
+    public String getObject(String idString) throws NumberFormatException, NoSuchCarException,
             DaoException, JsonProcessingException {
         String content;
 
@@ -60,12 +57,12 @@ public class CarService {
     }
 
     public void putObject(String json) throws ClassCastException,
-            NoSuchSalesmanException, NoCompleteDataProvideException, DaoException, IOException {
+            NoSuchCarException, NoSuchShowroomException, NoCompleteDataProvideException, DaoException, IOException {
     }
 
-    public void deleteObject(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException {
+    public void deleteObject(String idString) throws NumberFormatException, NoSuchCarException, DaoException {
         if (idString == null) {
-            throw new NoSuchSalesmanException("Car id not specified");
+            throw new NoSuchCarException("Car id not specified");
         }
         Integer id = Integer.parseInt(idString);
         getCar(id);
@@ -77,16 +74,16 @@ public class CarService {
         return this.objectMapper.writeValueAsString(this.carDao.getAllCars());
     }
 
-    private String getCarJSON(Integer id) throws DaoException, NoSuchSalesmanException, JsonProcessingException {
+    private String getCarJSON(Integer id) throws DaoException, NoSuchCarException, JsonProcessingException {
         Car car = getCar(id);
         return this.objectMapper.writeValueAsString(car);
     }
 
-    private Car getCar(Integer id) throws DaoException, NoSuchSalesmanException {
+    private Car getCar(Integer id) throws DaoException, NoSuchCarException {
         Car car = this.carDao.getCar(id);
 
         if (car == null) {
-            throw new NoSuchSalesmanException(String.format("No car with id %d in database", id));
+            throw new NoSuchCarException(String.format("No car with id %d in database", id));
         }
         return car;
     }
