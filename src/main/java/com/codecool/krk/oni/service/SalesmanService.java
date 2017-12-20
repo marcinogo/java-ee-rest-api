@@ -41,26 +41,28 @@ public class SalesmanService {
         if (!jsonMap.containsKey("name") || !jsonMap.containsKey("salary") || !jsonMap.containsKey("birthYear")) {
             throw new NoCompleteDataProvideException("No all date for new salesman provided");
         }
-        // Wrong exception throw
         Salesman salesman = new Salesman((String) jsonMap.get("name"), (Integer) jsonMap.get("salary"),
                 (Integer) jsonMap.get("birthYear"));
         salesmanDao.save(salesman);
     }
 
-    public void putSalesman(String idString, String name, String salary, String birthYear) throws NumberFormatException,
-            NoSuchSalesmanException, NoCompleteDataProvideException, DaoException {
-        if (idString == null) {
+    public void putSalesman(String json) throws ClassCastException,
+            NoSuchSalesmanException, NoCompleteDataProvideException, DaoException, IOException {
+        Map<String, Object> jsonMap = objectMapper.readValue(json,
+                new TypeReference<Map<String,Object>>(){});
+
+        if (!jsonMap.containsKey("id")) {
             throw new NoSuchSalesmanException("Salesman id not specified");
         }
 
-        if (name == null || salary == null || birthYear == null) {
-            throw new NoCompleteDataProvideException("No all date for update salesman provided");
+        if (!jsonMap.containsKey("name") || !jsonMap.containsKey("salary") || !jsonMap.containsKey("birthYear")) {
+            throw new NoCompleteDataProvideException("No all date for new salesman provided");
         }
 
-        Salesman salesman = getSalesman(Integer.parseInt(idString));
-
-        updateSalesman(salesman, name, salary, birthYear);
-        salesmanDao.update(salesman);
+        Salesman salesman = getSalesman((Integer) jsonMap.get("id"));
+        updateSalesman(salesman, (String) jsonMap.get("name"), (Integer) jsonMap.get("salary"),
+                (Integer) jsonMap.get("birthYear"));
+        salesmanDao.save(salesman);
     }
 
     public void deleteSalesman(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException {
@@ -95,9 +97,9 @@ public class SalesmanService {
         return salesman;
     }
 
-    private void updateSalesman(Salesman salesman, String name, String salary, String birthYear) throws NumberFormatException {
+    private void updateSalesman(Salesman salesman, String name, Integer salary, Integer birthYear) {
         salesman.setName(name);
-        salesman.setSalary(Integer.parseInt(salary));
-        salesman.setBirthYear(Integer.parseInt(birthYear));
+        salesman.setSalary(salary);
+        salesman.setBirthYear(birthYear);
     }
 }
