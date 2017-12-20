@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
 
-public class SalesmanService implements Service {
+public class SalesmanService {
     private SalesmanDao salesmanDao;
     private ObjectMapper objectMapper = new ObjectMapper();
 

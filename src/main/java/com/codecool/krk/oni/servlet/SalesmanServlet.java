@@ -24,7 +24,7 @@ public class SalesmanServlet extends HttpServlet {
         response.setContentType("application/json");
 
         try {
-            Service salesmanService = new SalesmanService();
+            SalesmanService salesmanService = new SalesmanService();
             response.getWriter().write(salesmanService.getObject(idString));
         } catch (DaoException e) {
             e.printStackTrace();
@@ -43,7 +43,7 @@ public class SalesmanServlet extends HttpServlet {
         String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
-            Service salesmanService = new SalesmanService();
+            SalesmanService salesmanService = new SalesmanService();
             salesmanService.postObject(json);
             send200(response, "200: Add new salesman to database");
         } catch (DaoException e) {
@@ -62,7 +62,7 @@ public class SalesmanServlet extends HttpServlet {
         String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
-            Service salesmanService = new SalesmanService();
+            SalesmanService salesmanService = new SalesmanService();
             salesmanService.putObject(json);
             send200(response, String.format("200: Update salesman with id %s in database", idString));
         } catch (DaoException e) {
@@ -83,7 +83,7 @@ public class SalesmanServlet extends HttpServlet {
         String idString = request.getParameter("id");
 
         try {
-            Service salesmanService = new SalesmanService();
+            SalesmanService salesmanService = new SalesmanService();
             salesmanService.deleteObject(idString);
             send200(response, String.format("200: Delete salesman with id %s from database", idString));
         } catch (DaoException e) {
