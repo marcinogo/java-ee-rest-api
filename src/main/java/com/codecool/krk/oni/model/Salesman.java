@@ -8,6 +8,8 @@ public class Salesman {
     private Integer salary;
     private Integer birthYear;
 
+    public Salesman() {
+    }
 
     public Salesman(Integer id, String name, Integer salary, Integer birthYear) {
         this.id = id;
@@ -26,14 +28,6 @@ public class Salesman {
         return String.format("id: %d. name: %s, salary: %d, birth_year",
                 this.id, this.name, this.salary, this.birthYear);
     }
-
-    /*public void save() throws DaoException {
-        mentorDao.save(this);
-    }
-
-    public void update() throws DaoException {
-        mentorDao.update(this);
-    }*/
 
     public JSONObject toJSON() {
         JSONObject jsonSalesman = new JSONObject();

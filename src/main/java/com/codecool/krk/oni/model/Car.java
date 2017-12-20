@@ -11,6 +11,9 @@ public class Car {
     private String yearOfProduction;
     private Showroom showroom;
 
+    public Car() {
+    }
+
     public Car(Integer id, String manufacturer, String model, String color,
                String yearOfProduction, Showroom showroom) {
         this.id = id;

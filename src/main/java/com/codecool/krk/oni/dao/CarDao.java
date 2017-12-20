@@ -114,7 +114,7 @@ public class CarDao {
         Integer showroomId = car.getShowroom().getId();
 
         String sqlQuery = "INSERT INTO cars "
-                + "(manufacture, model, color, year, showroom) "
+                + "(manufacturer, model, color, year, showroom) "
                 + "VALUES (?, ?, ?, ?, ?);";
 
         try {
