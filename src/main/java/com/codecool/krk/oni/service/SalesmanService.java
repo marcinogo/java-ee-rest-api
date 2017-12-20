@@ -59,8 +59,7 @@ public class SalesmanService {
         }
 
         Salesman salesman = getSalesman((Integer) jsonMap.get("id"));
-        updateSalesman(salesman, (String) jsonMap.get("name"), (Integer) jsonMap.get("salary"),
-                (Integer) jsonMap.get("birthYear"));
+        updateSalesman(salesman, jsonMap);
         salesmanDao.update(salesman);
     }
 
@@ -92,9 +91,9 @@ public class SalesmanService {
         return salesman;
     }
 
-    private void updateSalesman(Salesman salesman, String name, Integer salary, Integer birthYear) {
-        salesman.setName(name);
-        salesman.setSalary(salary);
-        salesman.setBirthYear(birthYear);
+    private void updateSalesman(Salesman salesman, Map<String, Object> jsonMap) {
+        salesman.setName((String) jsonMap.get("name"));
+        salesman.setSalary((Integer) jsonMap.get("salary"));
+        salesman.setBirthYear((Integer) jsonMap.get("birthYear"));
     }
 }

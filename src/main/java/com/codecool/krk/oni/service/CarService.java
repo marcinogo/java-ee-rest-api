@@ -2,10 +2,7 @@ package com.codecool.krk.oni.service;
 
 import com.codecool.krk.oni.dao.CarDao;
 import com.codecool.krk.oni.dao.ShowroomDao;
-import com.codecool.krk.oni.exception.DaoException;
-import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
-import com.codecool.krk.oni.exception.NoSuchSalesmanException;
-import com.codecool.krk.oni.exception.NoSuchShowroomException;
+import com.codecool.krk.oni.exception.*;
 import com.codecool.krk.oni.model.Car;
 import com.codecool.krk.oni.model.Showroom;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,7 +20,7 @@ public class CarService {
         this.carDao = new CarDao();
     }
 
-    public String getObject(String idString) throws NumberFormatException, NoSuchSalesmanException,
+    public String getObject(String idString) throws NumberFormatException, NoSuchCarException,
             DaoException, JsonProcessingException {
         String content;
 
@@ -48,7 +45,7 @@ public class CarService {
 
         if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") ||
                 !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("yearOfProduction")) {
-            throw new NoCompleteDataProvideException("No all date for new car provided");
+            throw new NoCompleteDataProvideException("No all data for new car provided");
         }
 
         Integer year = Integer.parseInt((String) jsonCarMap.get("yearOfProduction"));
@@ -60,12 +57,37 @@ public class CarService {
     }
 
     public void putObject(String json) throws ClassCastException,
-            NoSuchSalesmanException, NoCompleteDataProvideException, DaoException, IOException {
+            NoSuchCarException, NoSuchShowroomException, NoCompleteDataProvideException, DaoException, IOException {
+        Map<String, Object> jsonCarMap = objectMapper.readValue(json,
+                new TypeReference<Map<String,Object>>(){});
+
+        if (!jsonCarMap.containsKey("id")) {
+            throw new NoSuchCarException("Car id not specified");
+        }
+
+        if (!jsonCarMap.containsKey("showroom")) {
+            throw new NoCompleteDataProvideException("No showroom data for car update provided");
+        }
+
+        Map<String, Object> showroomJson = (Map<String, Object>) jsonCarMap.get("showroom");
+
+        if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") ||
+                !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("yearOfProduction")) {
+            throw new NoCompleteDataProvideException("No all data for car update provided");
+        }
+
+        Integer year = Integer.parseInt((String) jsonCarMap.get("yearOfProduction"));
+
+        Showroom showroom = getShowroom(showroomJson);
+        Car car = getCar((Integer) jsonCarMap.get("id"));
+
+        updateCar(car, jsonCarMap, showroom);
+        carDao.update(car);
     }
 
-    public void deleteObject(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException {
+    public void deleteObject(String idString) throws NumberFormatException, NoSuchCarException, DaoException {
         if (idString == null) {
-            throw new NoSuchSalesmanException("Car id not specified");
+            throw new NoSuchCarException("Car id not specified");
         }
         Integer id = Integer.parseInt(idString);
         getCar(id);
@@ -77,16 +99,16 @@ public class CarService {
         return this.objectMapper.writeValueAsString(this.carDao.getAllCars());
     }
 
-    private String getCarJSON(Integer id) throws DaoException, NoSuchSalesmanException, JsonProcessingException {
+    private String getCarJSON(Integer id) throws DaoException, NoSuchCarException, JsonProcessingException {
         Car car = getCar(id);
         return this.objectMapper.writeValueAsString(car);
     }
 
-    private Car getCar(Integer id) throws DaoException, NoSuchSalesmanException {
+    private Car getCar(Integer id) throws DaoException, NoSuchCarException {
         Car car = this.carDao.getCar(id);
 
         if (car == null) {
-            throw new NoSuchSalesmanException(String.format("No car with id %d in database", id));
+            throw new NoSuchCarException(String.format("No car with id %d in database", id));
         }
         return car;
     }
@@ -108,5 +130,13 @@ public class CarService {
             throw new NoSuchShowroomException("Not all data or wrong data for showroom provided");
         }
         return showroom;
+    }
+
+    private void updateCar(Car car, Map<String, Object> jsonCarMap, Showroom showroom) {
+        car.setManufacturer((String) jsonCarMap.get("manufacturer"));
+        car.setModel((String) jsonCarMap.get("model"));
+        car.setColor((String) jsonCarMap.get("color"));
+        car.setYearOfProduction((String) jsonCarMap.get("yearOfProduction"));
+        car.setShowroom(showroom);
     }
 }
