@@ -30,7 +30,7 @@ public class CarServlet extends HttpServlet {
             send404(response, String.format("404: %s", e.getMessage()));
             e.printStackTrace();
         } catch (NumberFormatException e) {
-            send400(response, "400: Wrong format of salesman id given");
+            send400(response, "400: Wrong format of cars id given");
             e.printStackTrace();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
