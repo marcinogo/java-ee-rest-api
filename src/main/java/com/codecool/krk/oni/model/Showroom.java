@@ -7,6 +7,9 @@ public class Showroom {
     private String name;
     private String address;
 
+    public Showroom() {
+    }
+
     public Showroom(Integer id, String name, String address) {
         this.id = id;
         this.name = name;
