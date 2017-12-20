@@ -5,16 +5,24 @@ import com.codecool.krk.oni.exception.DaoException;
 import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
 import com.codecool.krk.oni.exception.NoSuchSalesmanException;
 import com.codecool.krk.oni.model.Salesman;
-import org.json.JSONArray;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class SalesmanService {
     private SalesmanDao salesmanDao;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     public SalesmanService() throws DaoException {
         this.salesmanDao = new SalesmanDao();
     }
 
-    public String getSalesman(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException {
+    public String getSalesman(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException, JsonProcessingException {
         String content;
 
         if (idString == null) {
@@ -25,12 +33,17 @@ public class SalesmanService {
         return content;
     }
 
-    public void postSalesman(String name, String salary, String birthYear) throws NumberFormatException,
-            NoCompleteDataProvideException, DaoException {
-        if (name == null || salary == null || birthYear == null) {
+    public void postSalesman(String json) throws ClassCastException,
+            NoCompleteDataProvideException, DaoException , IOException{
+        Map<String, Object> jsonMap = objectMapper.readValue(json,
+                new TypeReference<Map<String,Object>>(){});
+
+        if (!jsonMap.containsKey("name") || !jsonMap.containsKey("salary") || !jsonMap.containsKey("birthYear")) {
             throw new NoCompleteDataProvideException("No all date for new salesman provided");
         }
-        Salesman salesman = new Salesman(name, Integer.parseInt(salary), Integer.parseInt(birthYear));
+        // Wrong exception throw
+        Salesman salesman = new Salesman((String) jsonMap.get("name"), (Integer) jsonMap.get("salary"),
+                (Integer) jsonMap.get("birthYear"));
         salesmanDao.save(salesman);
     }
 
@@ -59,17 +72,18 @@ public class SalesmanService {
         this.salesmanDao.delete(id);
     }
 
-    private String getAllSalesmenJSON() throws DaoException {
-        JSONArray array = new JSONArray();
+    private String getAllSalesmenJSON() throws DaoException, JsonProcessingException {
+        List<Salesman> salesmen = new ArrayList<>();
         for (Salesman salesman: this.salesmanDao.getAllSalesmen()) {
-            array.put(salesman.toJSON());
+            salesmen.add(salesman);
         }
-        return array.toString();
+        return this.objectMapper.writeValueAsString(salesmen);
+
     }
 
-    private String getSalesmanJSON(Integer id) throws DaoException, NoSuchSalesmanException {
+    private String getSalesmanJSON(Integer id) throws DaoException, NoSuchSalesmanException, JsonProcessingException {
         Salesman salesman = getSalesman(id);
-        return salesman.toJSON().toString();
+        return this.objectMapper.writeValueAsString(salesman);
     }
 
     private Salesman getSalesman(Integer id) throws DaoException, NoSuchSalesmanException {
