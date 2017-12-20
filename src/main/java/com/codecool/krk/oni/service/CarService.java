@@ -46,14 +46,15 @@ public class CarService {
 
         Map<String, Object> showroomJson = (Map<String, Object>) jsonCarMap.get("showroom");
 
-        if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") || !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("year")) {
+        if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") ||
+                !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("yearOfProduction")) {
             throw new NoCompleteDataProvideException("No all date for new car provided");
         }
 
-        Integer year = Integer.parseInt((String) jsonCarMap.get("year"));
+        Integer year = Integer.parseInt((String) jsonCarMap.get("yearOfProduction"));
 
         Car car = new Car((String) jsonCarMap.get("manufacturer"), (String) jsonCarMap.get("model"),
-                (String) jsonCarMap.get("color"), (String) jsonCarMap.get("year"), getShowroom(showroomJson));
+                (String) jsonCarMap.get("color"), (String) jsonCarMap.get("yearOfProduction"), getShowroom(showroomJson));
 
         carDao.save(car);
     }
