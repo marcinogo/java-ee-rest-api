@@ -12,6 +12,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 @WebServlet(urlPatterns = {"/showrooms/*"})
 public class ShowroomServlet extends HttpServlet {
@@ -38,7 +44,7 @@ public class ShowroomServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        try {
+        /*try {
             Showroom showroom = new ShowroomService().createShowroomFromJSONPost(request);
             new ShowroomDao().save(showroom);
             send200(response, "200: Add new salesman to database");
@@ -46,7 +52,9 @@ public class ShowroomServlet extends HttpServlet {
             e.printStackTrace();
         } catch (WrongDataException e1) {
             send404(response, "Error 404: No complete data to add new showroom");
-        }
+        }*/
+        String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        conv(json);
 
     }
 
@@ -123,5 +131,27 @@ public class ShowroomServlet extends HttpServlet {
         response.setStatus(404);
         response.setContentType("text/plain");
         response.getWriter().write(message);
+    }
+
+    public Map<String,String> conv(String jsonStr){
+
+        //String jsonStr = "{\"name\":\"Nataraj\", \"job\":5}";
+        Map<String,String> resultMap = new HashMap<String,String>();
+        ObjectMapper mapperObj = new ObjectMapper();
+
+        System.out.println("Input Json: "+jsonStr);
+
+        try {
+            resultMap = mapperObj.readValue(jsonStr,
+                    new TypeReference<HashMap<String,String>>(){});
+            System.out.println("Output Map: "+resultMap);
+            System.out.println(resultMap.get("name"));
+            System.out.println(resultMap.get("name").getClass().getSimpleName());
+            System.out.println(resultMap.get("job").getClass().getSimpleName());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return resultMap;
     }
 }
