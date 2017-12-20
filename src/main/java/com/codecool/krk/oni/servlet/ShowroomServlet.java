@@ -12,12 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 
 @WebServlet(urlPatterns = {"/showrooms/*"})
 public class ShowroomServlet extends HttpServlet {
@@ -44,17 +38,15 @@ public class ShowroomServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        /*try {
+        try {
             Showroom showroom = new ShowroomService().createShowroomFromJSONPost(request);
             new ShowroomDao().save(showroom);
-            send200(response, "200: Add new salesman to database");
+            send200(response, "200: Add new showroom to the database");
         } catch (DaoException e) {
             e.printStackTrace();
         } catch (WrongDataException e1) {
             send404(response, "Error 404: No complete data to add new showroom");
-        }*/
-        String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        conv(json);
+        }
 
     }
 
@@ -81,7 +73,7 @@ public class ShowroomServlet extends HttpServlet {
 
             if (new ShowroomService().isShowroom(idString)) {
                 new ShowroomDao().delete(Integer.valueOf(idString));
-                send200(response, "200: Showroom was successfully updated");
+                send200(response, "200: Showroom was successfully deleted");
             } else {
                 throw new NumberFormatException();
             }
@@ -92,28 +84,6 @@ public class ShowroomServlet extends HttpServlet {
             send404(response, "Error 404: There is no showroom of such id");
         }
     }
-
-    /*private String getAllSalesmenJSON(SalesmanDao salesmanDao) throws DaoException {
-        JSONArray array = new JSONArray();
-        for (Salesman salesman: salesmanDao.getAllSalesmen()) {
-            array.put(salesman.toJSON());
-        }
-        return array.toString();
-    }
-
-    private String getSalesmanJSON(SalesmanDao salesmanDao, Integer id) throws DaoException {
-        String content = null;
-        Salesman salesman = getSalesman(salesmanDao, id);
-        if (salesman != null) {
-            content = salesman.toJSON().toString();
-        }
-
-        return content;
-    }
-
-    private Salesman getSalesman(SalesmanDao salesmanDao, Integer id) throws DaoException{
-        return salesmanDao.getSalesman(id);
-    }*/
 
     private void send200(HttpServletResponse response, String message) throws IOException {
         response.setStatus(200);
@@ -133,25 +103,4 @@ public class ShowroomServlet extends HttpServlet {
         response.getWriter().write(message);
     }
 
-    public Map<String,String> conv(String jsonStr){
-
-        //String jsonStr = "{\"name\":\"Nataraj\", \"job\":5}";
-        Map<String,String> resultMap = new HashMap<String,String>();
-        ObjectMapper mapperObj = new ObjectMapper();
-
-        System.out.println("Input Json: "+jsonStr);
-
-        try {
-            resultMap = mapperObj.readValue(jsonStr,
-                    new TypeReference<HashMap<String,String>>(){});
-            System.out.println("Output Map: "+resultMap);
-            System.out.println(resultMap.get("name"));
-            System.out.println(resultMap.get("name").getClass().getSimpleName());
-            System.out.println(resultMap.get("job").getClass().getSimpleName());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return resultMap;
-    }
 }
