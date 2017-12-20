@@ -4,6 +4,8 @@ import com.codecool.krk.oni.exception.DaoException;
 import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
 import com.codecool.krk.oni.exception.NoSuchSalesmanException;
 import com.codecool.krk.oni.service.SalesmanService;
+import com.codecool.krk.oni.service.Service;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/salesmen/*"})
 public class SalesmanServlet extends HttpServlet {
@@ -22,7 +25,7 @@ public class SalesmanServlet extends HttpServlet {
 
         try {
             SalesmanService salesmanService = new SalesmanService();
-            response.getWriter().write(salesmanService.getSalesman(idString));
+            response.getWriter().write(salesmanService.getObject(idString));
         } catch (DaoException e) {
             e.printStackTrace();
         } catch (NoSuchSalesmanException e) {
@@ -31,24 +34,24 @@ public class SalesmanServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             send400(response, "400: Wrong format of salesman id given");
             e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("name");
-        String salary = request.getParameter("salary");
-        String birthYear = request.getParameter("birth_year");
+        String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
             SalesmanService salesmanService = new SalesmanService();
-            salesmanService.postSalesman(name, salary, birthYear);
+            salesmanService.postObject(json);
             send200(response, "200: Add new salesman to database");
         } catch (DaoException e) {
             e.printStackTrace();
         } catch (NoCompleteDataProvideException e) {
             send400(response, String.format("400: %s", e.getMessage()));
             e.printStackTrace();
-        } catch (NumberFormatException e) {
+        } catch (ClassCastException e) {
             send400(response, "400: Wrong format of numeric data for new salesman provided");
             e.printStackTrace();
         }
@@ -56,13 +59,11 @@ public class SalesmanServlet extends HttpServlet {
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idString = request.getParameter("id");
-        String name = request.getParameter("name");
-        String salary = request.getParameter("salary");
-        String birthYear = request.getParameter("birth_year");
+        String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
             SalesmanService salesmanService = new SalesmanService();
-            salesmanService.putSalesman(idString, name, salary, birthYear);
+            salesmanService.putObject(json);
             send200(response, String.format("200: Update salesman with id %s in database", idString));
         } catch (DaoException e) {
             e.printStackTrace();
@@ -72,7 +73,7 @@ public class SalesmanServlet extends HttpServlet {
         } catch (NoCompleteDataProvideException e) {
             send400(response, String.format("400: %s", e.getMessage()));
             e.printStackTrace();
-        } catch (NumberFormatException e) {
+        } catch (ClassCastException e) {
             send400(response, "400: Wrong format of numeric data for update salesman provided");
             e.printStackTrace();
         }
@@ -83,7 +84,7 @@ public class SalesmanServlet extends HttpServlet {
 
         try {
             SalesmanService salesmanService = new SalesmanService();
-            salesmanService.deleteSalesman(idString);
+            salesmanService.deleteObject(idString);
             send200(response, String.format("200: Delete salesman with id %s from database", idString));
         } catch (DaoException e) {
             e.printStackTrace();
