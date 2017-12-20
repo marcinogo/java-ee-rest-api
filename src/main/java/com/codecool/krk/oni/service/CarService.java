@@ -39,6 +39,12 @@ public class CarService implements Service {
     }
 
     public void deleteObject(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException {
+        if (idString == null) {
+            throw new NoSuchSalesmanException("Car id not specified");
+        }
+        Integer id = Integer.parseInt(idString);
+        getCar(id);
+        this.carDao.delete(id);
     }
 
     private String getAllCarsJSON() throws DaoException, JsonProcessingException {
