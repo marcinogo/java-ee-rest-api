@@ -4,7 +4,6 @@ import com.codecool.krk.oni.exception.DaoException;
 import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
 import com.codecool.krk.oni.exception.NoSuchSalesmanException;
 import com.codecool.krk.oni.service.SalesmanService;
-import com.codecool.krk.oni.service.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.servlet.ServletException;
