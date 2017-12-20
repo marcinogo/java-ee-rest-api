@@ -30,7 +30,7 @@ public class CarServlet extends HttpServlet {
             send404(response, String.format("404: %s", e.getMessage()));
             e.printStackTrace();
         } catch (NumberFormatException e) {
-            send400(response, "400: Wrong format of salesman id given");
+            send400(response, "400: Wrong format of car id given");
             e.printStackTrace();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -47,7 +47,21 @@ public class CarServlet extends HttpServlet {
     }
 
     protected void doDelete( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().write("car");
+        String idString = request.getParameter("id");
+
+        try {
+            Service carService = new CarService();
+            carService.deleteObject(idString);
+            send200(response, String.format("200: Delete car with id %s from database", idString));
+        } catch (DaoException e) {
+            e.printStackTrace();
+        } catch (NoSuchSalesmanException e) {
+            send404(response, String.format("404: %s", e.getMessage()));
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            send400(response, "400: Wrong format of car id given");
+            e.printStackTrace();
+        }
     }
 
     private void send200(HttpServletResponse response, String message) throws IOException {
