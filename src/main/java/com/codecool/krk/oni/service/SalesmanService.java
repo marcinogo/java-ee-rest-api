@@ -76,11 +76,7 @@ public class SalesmanService implements Service {
     }
 
     private String getAllSalesmenJSON() throws DaoException, JsonProcessingException {
-        List<Salesman> salesmen = new ArrayList<>();
-        for (Salesman salesman: this.salesmanDao.getAllSalesmen()) {
-            salesmen.add(salesman);
-        }
-        return this.objectMapper.writeValueAsString(salesmen);
+        return this.objectMapper.writeValueAsString(this.salesmanDao.getAllSalesmen());
 
     }
 
