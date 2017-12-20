@@ -4,6 +4,7 @@ import com.codecool.krk.oni.exception.DaoException;
 import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
 import com.codecool.krk.oni.exception.NoSuchSalesmanException;
 import com.codecool.krk.oni.service.SalesmanService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/salesmen/*"})
 public class SalesmanServlet extends HttpServlet {
@@ -31,17 +33,18 @@ public class SalesmanServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             send400(response, "400: Wrong format of salesman id given");
             e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("name");
-        String salary = request.getParameter("salary");
-        String birthYear = request.getParameter("birth_year");
+        response.setContentType("application/json");
+        String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
             SalesmanService salesmanService = new SalesmanService();
-            salesmanService.postSalesman(name, salary, birthYear);
+            salesmanService.postSalesman(json);
             send200(response, "200: Add new salesman to database");
         } catch (DaoException e) {
             e.printStackTrace();
@@ -50,6 +53,8 @@ public class SalesmanServlet extends HttpServlet {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             send400(response, "400: Wrong format of numeric data for new salesman provided");
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
