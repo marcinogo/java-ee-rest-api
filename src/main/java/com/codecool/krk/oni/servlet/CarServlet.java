@@ -3,8 +3,8 @@ package com.codecool.krk.oni.servlet;
 import com.codecool.krk.oni.exception.DaoException;
 import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
 import com.codecool.krk.oni.exception.NoSuchSalesmanException;
+import com.codecool.krk.oni.exception.NoSuchShowroomException;
 import com.codecool.krk.oni.service.CarService;
-import com.codecool.krk.oni.service.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.servlet.ServletException;
@@ -24,7 +24,7 @@ public class CarServlet extends HttpServlet {
         response.setContentType("application/json");
 
         try {
-            Service carService = new CarService();
+            CarService carService = new CarService();
             response.getWriter().write(carService.getObject(idString));
         } catch (DaoException e) {
             e.printStackTrace();
@@ -43,7 +43,7 @@ public class CarServlet extends HttpServlet {
         String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
-            Service carService = new CarService();
+            CarService carService = new CarService();
             carService.postObject(json);
             send200(response, "200: Add new car to database");
         } catch (DaoException e) {
@@ -57,6 +57,9 @@ public class CarServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             send400(response, "400: Wrong format of numeric data for new car provided");
             e.printStackTrace();
+        } catch (NoSuchShowroomException e) {
+            send404(response, String.format("404: %s", e.getMessage()));
+            e.printStackTrace();
         }
     }
 
@@ -68,7 +71,7 @@ public class CarServlet extends HttpServlet {
         String idString = request.getParameter("id");
 
         try {
-            Service carService = new CarService();
+            CarService carService = new CarService();
             carService.deleteObject(idString);
             send200(response, String.format("200: Delete car with id %s from database", idString));
         } catch (DaoException e) {
