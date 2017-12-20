@@ -10,11 +10,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-public class SalesmanService implements Service {
+public class SalesmanService {
     private SalesmanDao salesmanDao;
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -76,11 +74,7 @@ public class SalesmanService implements Service {
     }
 
     private String getAllSalesmenJSON() throws DaoException, JsonProcessingException {
-        List<Salesman> salesmen = new ArrayList<>();
-        for (Salesman salesman: this.salesmanDao.getAllSalesmen()) {
-            salesmen.add(salesman);
-        }
-        return this.objectMapper.writeValueAsString(salesmen);
+        return this.objectMapper.writeValueAsString(this.salesmanDao.getAllSalesmen());
 
     }
 
