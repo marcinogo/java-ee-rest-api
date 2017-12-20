@@ -1,6 +1,7 @@
 package com.codecool.krk.oni.servlet;
 
 import com.codecool.krk.oni.exception.DaoException;
+import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
 import com.codecool.krk.oni.exception.NoSuchSalesmanException;
 import com.codecool.krk.oni.service.CarService;
 import com.codecool.krk.oni.service.Service;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/cars/*"})
 public class CarServlet extends HttpServlet {
@@ -38,8 +40,24 @@ public class CarServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
-        response.getWriter().write("car");
+        try {
+            Service carService = new CarService();
+            carService.postObject(json);
+            send200(response, "200: Add new car to database");
+        } catch (DaoException e) {
+            e.printStackTrace();
+        } catch (NoCompleteDataProvideException e) {
+            send400(response, String.format("400: %s", e.getMessage()));
+            e.printStackTrace();
+        } catch (ClassCastException e) {
+            send400(response, "400: Wrong format of numeric data for new car provided");
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            send400(response, "400: Wrong format of numeric data for new car provided");
+            e.printStackTrace();
+        }
     }
 
     protected void doPut( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
