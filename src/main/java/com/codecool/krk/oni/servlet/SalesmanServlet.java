@@ -4,6 +4,7 @@ import com.codecool.krk.oni.exception.DaoException;
 import com.codecool.krk.oni.exception.NoCompleteDataProvideException;
 import com.codecool.krk.oni.exception.NoSuchSalesmanException;
 import com.codecool.krk.oni.service.SalesmanService;
+import com.codecool.krk.oni.service.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.servlet.ServletException;
@@ -23,8 +24,8 @@ public class SalesmanServlet extends HttpServlet {
         response.setContentType("application/json");
 
         try {
-            SalesmanService salesmanService = new SalesmanService();
-            response.getWriter().write(salesmanService.getSalesman(idString));
+            Service salesmanService = new SalesmanService();
+            response.getWriter().write(salesmanService.getObject(idString));
         } catch (DaoException e) {
             e.printStackTrace();
         } catch (NoSuchSalesmanException e) {
@@ -42,8 +43,8 @@ public class SalesmanServlet extends HttpServlet {
         String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
-            SalesmanService salesmanService = new SalesmanService();
-            salesmanService.postSalesman(json);
+            Service salesmanService = new SalesmanService();
+            salesmanService.postObject(json);
             send200(response, "200: Add new salesman to database");
         } catch (DaoException e) {
             e.printStackTrace();
@@ -61,8 +62,8 @@ public class SalesmanServlet extends HttpServlet {
         String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
-            SalesmanService salesmanService = new SalesmanService();
-            salesmanService.putSalesman(json);
+            Service salesmanService = new SalesmanService();
+            salesmanService.putObject(json);
             send200(response, String.format("200: Update salesman with id %s in database", idString));
         } catch (DaoException e) {
             e.printStackTrace();
@@ -82,8 +83,8 @@ public class SalesmanServlet extends HttpServlet {
         String idString = request.getParameter("id");
 
         try {
-            SalesmanService salesmanService = new SalesmanService();
-            salesmanService.deleteSalesman(idString);
+            Service salesmanService = new SalesmanService();
+            salesmanService.deleteObject(idString);
             send200(response, String.format("200: Delete salesman with id %s from database", idString));
         } catch (DaoException e) {
             e.printStackTrace();

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SalesmanService {
+public class SalesmanService implements Service {
     private SalesmanDao salesmanDao;
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -22,7 +22,8 @@ public class SalesmanService {
         this.salesmanDao = new SalesmanDao();
     }
 
-    public String getSalesman(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException, JsonProcessingException {
+    public String getObject(String idString) throws NumberFormatException, NoSuchSalesmanException,
+            DaoException, JsonProcessingException {
         String content;
 
         if (idString == null) {
@@ -33,8 +34,8 @@ public class SalesmanService {
         return content;
     }
 
-    public void postSalesman(String json) throws ClassCastException,
-            NoCompleteDataProvideException, DaoException , IOException{
+    public void postObject(String json) throws ClassCastException,
+            NoCompleteDataProvideException, DaoException , IOException {
         Map<String, Object> jsonMap = objectMapper.readValue(json,
                 new TypeReference<Map<String,Object>>(){});
 
@@ -46,7 +47,7 @@ public class SalesmanService {
         salesmanDao.save(salesman);
     }
 
-    public void putSalesman(String json) throws ClassCastException,
+    public void putObject(String json) throws ClassCastException,
             NoSuchSalesmanException, NoCompleteDataProvideException, DaoException, IOException {
         Map<String, Object> jsonMap = objectMapper.readValue(json,
                 new TypeReference<Map<String,Object>>(){});
@@ -62,10 +63,10 @@ public class SalesmanService {
         Salesman salesman = getSalesman((Integer) jsonMap.get("id"));
         updateSalesman(salesman, (String) jsonMap.get("name"), (Integer) jsonMap.get("salary"),
                 (Integer) jsonMap.get("birthYear"));
-        salesmanDao.save(salesman);
+        salesmanDao.update(salesman);
     }
 
-    public void deleteSalesman(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException {
+    public void deleteObject(String idString) throws NumberFormatException, NoSuchSalesmanException, DaoException {
         if (idString == null) {
             throw new NoSuchSalesmanException("Salesman id not specified");
         }
