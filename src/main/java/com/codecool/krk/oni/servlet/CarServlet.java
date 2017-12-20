@@ -67,7 +67,7 @@ public class CarServlet extends HttpServlet {
         try {
             CarService carService = new CarService();
             carService.putObject(json);
-            send200(response, String.format("200: Update car with id %s in database", idString));
+            send200(response, "200: Update car in database");
         } catch (DaoException e) {
             e.printStackTrace();
         } catch (NoSuchCarException e) {
