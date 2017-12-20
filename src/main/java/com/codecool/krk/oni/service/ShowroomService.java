@@ -6,15 +6,23 @@ import com.codecool.krk.oni.exception.DaoException;
 import com.codecool.krk.oni.exception.WrongDataException;
 import com.codecool.krk.oni.model.Car;
 import com.codecool.krk.oni.model.Showroom;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.json.JSONArray;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ShowroomService {
 
-    public Showroom createShowroomFromJSONPost(HttpServletRequest request) throws WrongDataException {
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
+    public Showroom createShowroomFromJSONPost(HttpServletRequest request) throws WrongDataException, IOException {
+        Map<String,String> JsonInput = readJSONToMap(request);
+
+        String name = JsonInput.get("name");
+        String address = JsonInput.get("address");
         Showroom showroom = null;
 
         if (name == null || name.equals("")) {
@@ -26,16 +34,18 @@ public class ShowroomService {
         return showroom;
     }
 
-    public Showroom createShowroomFromJSONPut(HttpServletRequest request) throws WrongDataException, NumberFormatException, DaoException {
-        String idString = request.getParameter("id");
+    public Showroom createShowroomFromJSONPut(HttpServletRequest request) throws WrongDataException, NumberFormatException, DaoException, IOException {
+        Map<String,String> JsonInput = readJSONToMap(request);
+
+        String idString = JsonInput.get("id");
         Integer id = Integer.valueOf(idString);
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
+        String name = JsonInput.get("name");
+        String address = JsonInput.get("address");
 
         Showroom showroom = null;
 
-        if (name.equals("")) {
-            throw new WrongDataException("400: No complete data to add new showroom");
+        if (name == null || name.equals("")) {
+            throw new WrongDataException("400: No complete data to update the showroom");
         } else {
             showroom = new ShowroomDao().getShowroom(id);
 
@@ -58,7 +68,7 @@ public class ShowroomService {
     public String getShowroom(String idString, String showCars) throws NumberFormatException, WrongDataException, DaoException {
         String content;
 
-        if (idString != null && showCars.equals("true")) {
+        if (idString != null && showCars != null && showCars.equals("true")) {
             content = getAllCarsInShowroom(idString);
         } else if (idString == null) {
             content = getAllShowroomsJSON();
@@ -96,8 +106,24 @@ public class ShowroomService {
         Showroom showroom = new ShowroomDao().getShowroom(id);
 
         if (showroom == null) {
-            throw new WrongDataException(String.format("No salesman with id %d in database", id));
+            throw new WrongDataException(String.format("No showroom with id %d in database", id));
         }
         return showroom;
+    }
+
+    private Map<String,String> readJSONToMap(HttpServletRequest request) throws IOException {
+        String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        Map<String,String> resultMap = new HashMap<>();
+        ObjectMapper mapperObj = new ObjectMapper();
+
+        try {
+            resultMap = mapperObj.readValue(json,
+                    new TypeReference<HashMap<String,String>>(){});
+            System.out.println(resultMap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return resultMap;
     }
 }
