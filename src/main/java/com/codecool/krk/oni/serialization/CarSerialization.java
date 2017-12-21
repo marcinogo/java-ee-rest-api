@@ -11,7 +11,7 @@ public class CarSerialization {
         jsonCar.put("manufacturer", car.getManufacturer());
         jsonCar.put("model", car.getModel());
         jsonCar.put("color", car.getColor());
-        jsonCar.put("year_of_production", car.getYearOfProduction());
+        jsonCar.put("yearOfProduction", car.getYearOfProduction());
         jsonCar.put("showroom_id", car.getShowroom().getId());
         return jsonCar;
     }
