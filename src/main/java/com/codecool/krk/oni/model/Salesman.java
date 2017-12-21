@@ -1,7 +1,5 @@
 package com.codecool.krk.oni.model;
 
-import org.json.JSONObject;
-
 public class Salesman {
     private Integer id;
     private String name;
@@ -22,20 +20,6 @@ public class Salesman {
         this.name = name;
         this.salary = salary;
         this.birthYear = birthYear;
-    }
-
-    public String toString() {
-        return String.format("id: %d. name: %s, salary: %d, birth_year",
-                this.id, this.name, this.salary, this.birthYear);
-    }
-
-    public JSONObject toJSON() {
-        JSONObject jsonSalesman = new JSONObject();
-        jsonSalesman.put("id", this.id);
-        jsonSalesman.put("name", this.name);
-        jsonSalesman.put("salary", this.salary);
-        jsonSalesman.put("birth_year", this.birthYear);
-        return jsonSalesman;
     }
 
     public Integer getId() {

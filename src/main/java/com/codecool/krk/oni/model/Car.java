@@ -1,7 +1,5 @@
 package com.codecool.krk.oni.model;
 
-import org.json.JSONObject;
-
 public class Car {
     private Integer id;
     private String manufacturer;
