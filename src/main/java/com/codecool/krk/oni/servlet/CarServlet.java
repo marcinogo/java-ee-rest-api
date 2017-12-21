@@ -16,9 +16,10 @@ import java.util.stream.Collectors;
 public class CarServlet extends HttpServlet {
 
     protected void doGet( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String idString = request.getParameter("id");
 
-        response.setContentType("application/json");
+        response.setContentType("application/json; charset=UTF-8");
 
         try {
             CarService carService = new CarService();
@@ -37,6 +38,7 @@ public class CarServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
@@ -61,6 +63,7 @@ public class CarServlet extends HttpServlet {
     }
 
     protected void doPut( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String json = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         try {
@@ -85,6 +88,7 @@ public class CarServlet extends HttpServlet {
     }
 
     protected void doDelete( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String idString = request.getParameter("id");
 
         try {
