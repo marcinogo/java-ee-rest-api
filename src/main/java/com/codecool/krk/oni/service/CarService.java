@@ -37,21 +37,19 @@ public class CarService {
             NoCompleteDataProvideException, NoSuchShowroomException, DaoException , IOException {
         Map<String, Object> jsonCarMap = mapJson(json);
 
+        if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") ||
+                !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("yearOfProduction")) {
+            throw new NoCompleteDataProvideException("No all data for new car provided");
+        }
+
         if (!jsonCarMap.containsKey("showroom")) {
             throw new NoCompleteDataProvideException("No showroom data for new car provided");
         }
 
         Map<String, Object> showroomJson = (Map<String, Object>) jsonCarMap.get("showroom");
 
-        if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") ||
-                !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("yearOfProduction")) {
-            throw new NoCompleteDataProvideException("No all data for new car provided");
-        }
-
-        Integer year = Integer.parseInt((String) jsonCarMap.get("yearOfProduction"));
-
         Car car = new Car((String) jsonCarMap.get("manufacturer"), (String) jsonCarMap.get("model"),
-                (String) jsonCarMap.get("color"), (String) jsonCarMap.get("yearOfProduction"), getShowroom(showroomJson));
+                (String) jsonCarMap.get("color"), (Integer) jsonCarMap.get("yearOfProduction"), getShowroom(showroomJson));
 
         carDao.save(car);
     }
@@ -75,8 +73,6 @@ public class CarService {
 
         Map<String, Object> showroomJson = (Map<String, Object>) jsonCarMap.get("showroom");
 
-        Integer year = Integer.parseInt((String) jsonCarMap.get("yearOfProduction"));
-
         Showroom showroom = getShowroom(showroomJson);
         Car car = getCar((Integer) jsonCarMap.get("id"));
 
@@ -94,7 +90,6 @@ public class CarService {
     }
 
     private String getAllCarsJSON() throws DaoException, JsonProcessingException {
-
         return this.objectMapper.writeValueAsString(this.carDao.getAllCars());
     }
 
@@ -112,7 +107,6 @@ public class CarService {
         return car;
     }
 
-    // Maybe this method should be in ShowroomService
     private Showroom getShowroom(Map<String, Object> showroomJson) throws DaoException, NoSuchShowroomException {
         ShowroomDao showroomDao = new ShowroomDao();
 
@@ -135,7 +129,7 @@ public class CarService {
         car.setManufacturer((String) jsonCarMap.get("manufacturer"));
         car.setModel((String) jsonCarMap.get("model"));
         car.setColor((String) jsonCarMap.get("color"));
-        car.setYearOfProduction((String) jsonCarMap.get("yearOfProduction"));
+        car.setYearOfProduction((Integer) jsonCarMap.get("yearOfProduction"));
         car.setShowroom(showroom);
     }
 
@@ -148,7 +142,6 @@ public class CarService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return jsonMap;
     }
 }

@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CarDao {
 
@@ -49,16 +50,16 @@ public class CarDao {
         String manufacturer = result.getString("manufacturer");
         String model = result.getString("model");
         String color = result.getString("color");
-        String yearOfProduction = result.getString("year");
+        Integer yearOfProduction = result.getInt("year");
         Integer showroomId = result.getInt("showroom");
         Showroom showroom = new ShowroomDao().getShowroom(showroomId);
 
         return new Car(id, manufacturer, model, color, yearOfProduction, showroom);
     }
 
-    public ArrayList<Car> getAllCars() throws DaoException {
+    public List<Car> getAllCars() throws DaoException {
 
-        ArrayList<Car> foundCars = new ArrayList<>();
+        List<Car> foundCars = new ArrayList<>();
         String sqlQuery = "SELECT * FROM cars";
 
         try {
@@ -80,9 +81,9 @@ public class CarDao {
         return foundCars;
     }
 
-    public ArrayList<Car> getAllCarsByShowroom(Showroom showroom) throws DaoException {
+    public List<Car> getAllCarsByShowroom(Showroom showroom) throws DaoException {
 
-        ArrayList<Car> foundCars = new ArrayList<>();
+        List<Car> foundCars = new ArrayList<>();
         String sqlQuery = "SELECT * FROM cars WHERE showroom = ?;";
 
         try {
@@ -110,7 +111,7 @@ public class CarDao {
         String manufacturer = car.getManufacturer();
         String model = car.getModel();
         String color = car.getColor();
-        String yearOfProduction = car.getYearOfProduction();
+        Integer yearOfProduction = car.getYearOfProduction();
         Integer showroomId = car.getShowroom().getId();
 
         String sqlQuery = "INSERT INTO cars "
@@ -122,7 +123,7 @@ public class CarDao {
             stmt.setString(1, manufacturer);
             stmt.setString(2, model);
             stmt.setString(3, color);
-            stmt.setString(4, yearOfProduction);
+            stmt.setInt(4, yearOfProduction);
             stmt.setInt(5, showroomId);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -137,7 +138,7 @@ public class CarDao {
         String manufacturer = car.getManufacturer();
         String model = car.getModel();
         String color = car.getColor();
-        String yearOfProduction = car.getYearOfProduction();
+        Integer yearOfProduction = car.getYearOfProduction();
         Integer showroomId = car.getShowroom().getId();
 
         String sqlQuery = "UPDATE cars "
@@ -149,7 +150,7 @@ public class CarDao {
             stmt.setString(1, manufacturer);
             stmt.setString(2, model);
             stmt.setString(3, color);
-            stmt.setString(4, yearOfProduction);
+            stmt.setInt(4, yearOfProduction);
             stmt.setInt(5, showroomId);
             stmt.setInt(6, id);
             stmt.executeUpdate();
