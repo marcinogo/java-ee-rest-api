@@ -6,6 +6,8 @@ import com.codecool.krk.oni.exception.DaoException;
 import com.codecool.krk.oni.exception.WrongDataException;
 import com.codecool.krk.oni.model.Car;
 import com.codecool.krk.oni.model.Showroom;
+import com.codecool.krk.oni.serialization.CarSerialization;
+import com.codecool.krk.oni.serialization.ShowroomSerialization;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.json.JSONArray;
@@ -42,7 +44,7 @@ public class ShowroomService {
         String name = JsonInput.get("name");
         String address = JsonInput.get("address");
 
-        Showroom showroom = null;
+        Showroom showroom;
 
         if (name == null || name.equals("")) {
             throw new WrongDataException("400: No complete data to update the showroom");
@@ -83,7 +85,7 @@ public class ShowroomService {
         JSONArray array = new JSONArray();
 
         for (Car car: new CarDao().getAllCarsByShowroom(showroom)) {
-            array.put(car.toJSON());
+            array.put(new CarSerialization().toJSON(car));
         }
 
         return array.toString();
@@ -92,14 +94,14 @@ public class ShowroomService {
     private String getAllShowroomsJSON() throws DaoException {
         JSONArray array = new JSONArray();
         for (Showroom showroom: new ShowroomDao().getAllShowrooms()) {
-            array.put(showroom.toJSON());
+            array.put(new ShowroomSerialization().toJSON(showroom));
         }
         return array.toString();
     }
 
     private String getShowroomJSON(Integer id) throws DaoException, WrongDataException {
         Showroom showroom = this.getShowroom(id);
-        return showroom.toJSON().toString();
+        return new ShowroomSerialization().toJSON(showroom).toString();
     }
 
     private Showroom getShowroom(Integer id) throws DaoException, WrongDataException {
