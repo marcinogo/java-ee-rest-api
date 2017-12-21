@@ -62,7 +62,7 @@ User can retrieve all <b>Showrooms</b> from data base in *JSON* by request with 
 
 User can retrieve <b>Showroom</b> with given <b>id</b> number from database in *JSON* by request with specify url as ``localhost:8080/showrooms?{id}``.
 
-User can retrieve list of <b>Cars</> from <b>Showroom</b> with given <b>id</b> number from database in *JSON* by request with specify url as ``localhost:8080/showrooms?{id}&cars=true``.
+User can retrieve list of <b>Cars</b> from <b>Showroom</b> with given <b>id</b> number from database in *JSON* by request with specify url as ``localhost:8080/showrooms?{id}&cars=true``.
 
 #### method POST
 
