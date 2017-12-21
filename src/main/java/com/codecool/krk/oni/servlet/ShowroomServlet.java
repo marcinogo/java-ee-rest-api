@@ -17,10 +17,11 @@ import java.io.IOException;
 public class ShowroomServlet extends HttpServlet {
 
     protected void doGet( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String idString = request.getParameter("id");
         String showCars = request.getParameter("cars");
 
-        response.setContentType("application/json");
+        response.setContentType("application/json; charset=UTF-8");
 
         try {
             ShowroomService showroomService = new ShowroomService();
@@ -37,6 +38,7 @@ public class ShowroomServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
 
         try {
             Showroom showroom = new ShowroomService().createShowroomFromJSONPost(request);
@@ -51,6 +53,7 @@ public class ShowroomServlet extends HttpServlet {
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
 
         try {
             Showroom showroom = new ShowroomService().createShowroomFromJSONPut(request);
@@ -67,6 +70,7 @@ public class ShowroomServlet extends HttpServlet {
     }
 
     protected void doDelete( HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String idString = request.getParameter("id");
 
         try {
