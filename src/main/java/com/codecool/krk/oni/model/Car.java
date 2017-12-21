@@ -79,19 +79,4 @@ public class Car {
         this.showroom = showroom;
     }
 
-    public String toString() {
-        return String.format("id: %d. manufacturer: %, model: %s, color: %s, year_of_production: %s, showroom_id: %d",
-                this.id, this.manufacturer, this.model, this.color, this.yearOfProduction, this.showroom.getId());
-    }
-
-    public JSONObject toJSON() {
-        JSONObject jsonCar = new JSONObject();
-        jsonCar.put("id", this.id);
-        jsonCar.put("manufacturer", this.manufacturer);
-        jsonCar.put("model", this.model);
-        jsonCar.put("color", this.color);
-        jsonCar.put("year_of_production", this.yearOfProduction);
-        jsonCar.put("showroom_id", this.showroom.getId());
-        return jsonCar;
-    }
 }

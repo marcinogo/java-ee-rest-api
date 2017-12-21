@@ -44,17 +44,4 @@ public class Showroom {
     public void setAddress(String address) {
         this.address = address;
     }
-
-    public String toString() {
-        return String.format("id: %d. name: %, address: %s",
-                this.id, this.name, this.address);
-    }
-
-    public JSONObject toJSON() {
-        JSONObject jsonShowroom = new JSONObject();
-        jsonShowroom.put("id", this.id);
-        jsonShowroom.put("name", this.name);
-        jsonShowroom.put("address", this.address);
-        return jsonShowroom;
-    }
 }
