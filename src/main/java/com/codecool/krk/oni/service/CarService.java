@@ -37,16 +37,16 @@ public class CarService {
             NoCompleteDataProvideException, NoSuchShowroomException, DaoException , IOException {
         Map<String, Object> jsonCarMap = mapJson(json);
 
+        if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") ||
+                !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("yearOfProduction")) {
+            throw new NoCompleteDataProvideException("No all data for new car provided");
+        }
+
         if (!jsonCarMap.containsKey("showroom")) {
             throw new NoCompleteDataProvideException("No showroom data for new car provided");
         }
 
         Map<String, Object> showroomJson = (Map<String, Object>) jsonCarMap.get("showroom");
-
-        if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") ||
-                !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("yearOfProduction")) {
-            throw new NoCompleteDataProvideException("No all data for new car provided");
-        }
 
         Car car = new Car((String) jsonCarMap.get("manufacturer"), (String) jsonCarMap.get("model"),
                 (String) jsonCarMap.get("color"), (Integer) jsonCarMap.get("yearOfProduction"), getShowroom(showroomJson));
