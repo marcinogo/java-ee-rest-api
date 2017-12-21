@@ -49,12 +49,12 @@ public class SalesmanService {
             NoSuchSalesmanException, NoCompleteDataProvideException, DaoException {
         Map<String, Object> jsonMap = mapJson(json);
 
-        if (!jsonMap.containsKey("id")) {
-            throw new NoSuchSalesmanException("Salesman id not specified");
-        }
-
         if (!jsonMap.containsKey("name") || !jsonMap.containsKey("salary") || !jsonMap.containsKey("birthYear")) {
             throw new NoCompleteDataProvideException("No all date for new salesman provided");
+        }
+
+        if (!jsonMap.containsKey("id")) {
+            throw new NoSuchSalesmanException("Salesman id not specified");
         }
 
         Salesman salesman = getSalesman((Integer) jsonMap.get("id"));
