@@ -48,10 +48,8 @@ public class CarService {
             throw new NoCompleteDataProvideException("No all data for new car provided");
         }
 
-        Integer year = Integer.parseInt((String) jsonCarMap.get("yearOfProduction"));
-
         Car car = new Car((String) jsonCarMap.get("manufacturer"), (String) jsonCarMap.get("model"),
-                (String) jsonCarMap.get("color"), (String) jsonCarMap.get("yearOfProduction"), getShowroom(showroomJson));
+                (String) jsonCarMap.get("color"), (Integer) jsonCarMap.get("yearOfProduction"), getShowroom(showroomJson));
 
         carDao.save(car);
     }
@@ -74,8 +72,6 @@ public class CarService {
         }
 
         Map<String, Object> showroomJson = (Map<String, Object>) jsonCarMap.get("showroom");
-
-        Integer year = Integer.parseInt((String) jsonCarMap.get("yearOfProduction"));
 
         Showroom showroom = getShowroom(showroomJson);
         Car car = getCar((Integer) jsonCarMap.get("id"));
@@ -135,7 +131,7 @@ public class CarService {
         car.setManufacturer((String) jsonCarMap.get("manufacturer"));
         car.setModel((String) jsonCarMap.get("model"));
         car.setColor((String) jsonCarMap.get("color"));
-        car.setYearOfProduction((String) jsonCarMap.get("yearOfProduction"));
+        car.setYearOfProduction((Integer) jsonCarMap.get("yearOfProduction"));
         car.setShowroom(showroom);
     }
 

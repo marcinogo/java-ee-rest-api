@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS cars (
   manufacturer	TEXT NOT NULL,
   model	TEXT NOT NULL,
   color	TEXT,
-  year	TEXT,
+  year	INTEGER,
   showroom	INTEGER NOT NULL,
   FOREIGN KEY(showroom) REFERENCES showrooms(id) ON DELETE CASCADE
 );
