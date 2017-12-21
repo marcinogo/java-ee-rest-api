@@ -90,7 +90,6 @@ public class CarService {
     }
 
     private String getAllCarsJSON() throws DaoException, JsonProcessingException {
-
         return this.objectMapper.writeValueAsString(this.carDao.getAllCars());
     }
 
@@ -108,7 +107,6 @@ public class CarService {
         return car;
     }
 
-    // Maybe this method should be in ShowroomService
     private Showroom getShowroom(Map<String, Object> showroomJson) throws DaoException, NoSuchShowroomException {
         ShowroomDao showroomDao = new ShowroomDao();
 
@@ -144,7 +142,6 @@ public class CarService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return jsonMap;
     }
 }
