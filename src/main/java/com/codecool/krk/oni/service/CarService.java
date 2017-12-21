@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CarService {
@@ -34,8 +35,7 @@ public class CarService {
 
     public void postObject(String json) throws ClassCastException,
             NoCompleteDataProvideException, NoSuchShowroomException, DaoException , IOException {
-        Map<String, Object> jsonCarMap = objectMapper.readValue(json,
-                new TypeReference<Map<String,Object>>(){});
+        Map<String, Object> jsonCarMap = mapJson(json);
 
         if (!jsonCarMap.containsKey("showroom")) {
             throw new NoCompleteDataProvideException("No showroom data for new car provided");
@@ -58,8 +58,7 @@ public class CarService {
 
     public void putObject(String json) throws ClassCastException,
             NoSuchCarException, NoSuchShowroomException, NoCompleteDataProvideException, DaoException, IOException {
-        Map<String, Object> jsonCarMap = objectMapper.readValue(json,
-                new TypeReference<Map<String,Object>>(){});
+        Map<String, Object> jsonCarMap = mapJson(json);
 
         if (!jsonCarMap.containsKey("id")) {
             throw new NoSuchCarException("Car id not specified");
@@ -138,5 +137,18 @@ public class CarService {
         car.setColor((String) jsonCarMap.get("color"));
         car.setYearOfProduction((String) jsonCarMap.get("yearOfProduction"));
         car.setShowroom(showroom);
+    }
+
+    private Map<String, Object> mapJson(String json) {
+        Map<String, Object> jsonMap = new LinkedHashMap<>();
+
+        try {
+            jsonMap = objectMapper.readValue(json,
+                    new TypeReference<Map<String,Object>>(){});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return jsonMap;
     }
 }
