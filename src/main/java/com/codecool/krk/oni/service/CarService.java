@@ -60,6 +60,11 @@ public class CarService {
             NoSuchCarException, NoSuchShowroomException, NoCompleteDataProvideException, DaoException, IOException {
         Map<String, Object> jsonCarMap = mapJson(json);
 
+        if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") ||
+                !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("yearOfProduction")) {
+            throw new NoCompleteDataProvideException("No all data for car update provided");
+        }
+
         if (!jsonCarMap.containsKey("id")) {
             throw new NoSuchCarException("Car id not specified");
         }
@@ -69,11 +74,6 @@ public class CarService {
         }
 
         Map<String, Object> showroomJson = (Map<String, Object>) jsonCarMap.get("showroom");
-
-        if (!jsonCarMap.containsKey("manufacturer") || !jsonCarMap.containsKey("model") ||
-                !jsonCarMap.containsKey("color") || !jsonCarMap.containsKey("yearOfProduction")) {
-            throw new NoCompleteDataProvideException("No all data for car update provided");
-        }
 
         Integer year = Integer.parseInt((String) jsonCarMap.get("yearOfProduction"));
 
