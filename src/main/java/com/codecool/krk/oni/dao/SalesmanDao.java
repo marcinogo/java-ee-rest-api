@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SalesmanDao {
 
@@ -52,9 +53,9 @@ public class SalesmanDao {
         return new Salesman(id, name, salary, birthYear);
     }
 
-    public ArrayList<Salesman> getAllSalesmen() throws DaoException {
+    public List<Salesman> getAllSalesmen() throws DaoException {
 
-        ArrayList<Salesman> foundSalesmen = new ArrayList<>();
+        List<Salesman> foundSalesmen = new ArrayList<>();
         String sqlQuery = "SELECT * FROM salesmen";
 
         try {

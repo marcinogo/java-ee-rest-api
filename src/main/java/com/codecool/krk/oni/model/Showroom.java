@@ -1,7 +1,5 @@
 package com.codecool.krk.oni.model;
 
-import org.json.JSONObject;
-
 public class Showroom {
     private Integer id;
     private String name;
