@@ -1,28 +1,28 @@
 package com.codecool.krk.oni.dao;
 
 import com.codecool.krk.oni.exception.DaoException;
-import com.codecool.krk.oni.model.Salesman;
+import com.codecool.krk.oni.model.Showroom;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class SalesmanDao {
+public class ShowroomDao {
 
     private final Connection connection;
     private PreparedStatement stmt = null;
 
-    public SalesmanDao() throws DaoException {
+    public ShowroomDao() throws DaoException {
 
         this.connection = DatabaseConnection.getConnection();
     }
 
-    public Salesman getSalesman(Integer id) throws DaoException {
+    public Showroom getShowroom(Integer id) throws DaoException {
 
-        Salesman salesman = null;
-        String sqlQuery = "SELECT * FROM salesmen WHERE id = ?;";
+        Showroom showroom = null;
+        String sqlQuery = "SELECT * FROM showrooms WHERE id = ?;";
 
         try {
             stmt = connection.prepareStatement(sqlQuery);
@@ -31,7 +31,7 @@ public class SalesmanDao {
             ResultSet result = stmt.executeQuery();
 
             if (result.next()) {
-                salesman = createSalesman(result);
+                showroom = createShowroom(result);
             }
 
             result.close();
@@ -40,31 +40,30 @@ public class SalesmanDao {
             throw new DaoException(this.getClass().getName() + " class caused a problem!");
         }
 
-        return salesman;
+        return showroom;
     }
 
-    private Salesman createSalesman(ResultSet result) throws SQLException, DaoException {
+    private Showroom createShowroom(ResultSet result) throws SQLException, DaoException {
         String name = result.getString("name");
-        Integer salary = result.getInt("salary");
-        Integer birthYear = result.getInt("birth_year");
+        String address = result.getString("address");
         Integer id = result.getInt("id");
 
-        return new Salesman(id, name, salary, birthYear);
+        return new Showroom(id, name, address);
     }
 
-    public ArrayList<Salesman> getAllSalesmen() throws DaoException {
+    public ArrayList<Showroom> getAllShowrooms() throws DaoException {
 
-        ArrayList<Salesman> foundSalesmen = new ArrayList<>();
-        String sqlQuery = "SELECT * FROM salesmen";
+        ArrayList<Showroom> foundShowrooms = new ArrayList<>();
+        String sqlQuery = "SELECT * FROM showrooms";
 
         try {
             stmt = connection.prepareStatement(sqlQuery);
             ResultSet result = stmt.executeQuery();
 
             while (result.next()) {
-                Salesman salesman = createSalesman(result);
+                Showroom showroom = createShowroom(result);
 
-                foundSalesmen.add(salesman);
+                foundShowrooms.add(showroom);
             }
 
             result.close();
@@ -73,24 +72,22 @@ public class SalesmanDao {
             throw new DaoException(this.getClass().getName() + " class caused a problem!");
         }
 
-        return foundSalesmen;
+        return foundShowrooms;
     }
 
-    public void save(Salesman salesman) throws DaoException {
+    public void save(Showroom showroom) throws DaoException {
 
-        String name = salesman.getName();
-        Integer salary = salesman.getSalary();
-        Integer birthYear = salesman.getBirthYear();
+        String name = showroom.getName();
+        String address = showroom.getAddress();
 
-        String sqlQuery = "INSERT INTO salesmen "
-                + "(name, salary, birth_year) "
-                + "VALUES (?, ?, ?);";
+        String sqlQuery = "INSERT INTO showrooms "
+                + "(name, address) "
+                + "VALUES (?, ?);";
 
         try {
             stmt = connection.prepareStatement(sqlQuery);
             stmt.setString(1, name);
-            stmt.setInt(2, salary);
-            stmt.setInt(3, birthYear);
+            stmt.setString(2, address);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(this.getClass().getName() + " class caused a problem!");
@@ -98,23 +95,21 @@ public class SalesmanDao {
 
     }
 
-    public void update(Salesman salesman) throws DaoException {
+    public void update(Showroom showroom) throws DaoException {
 
-        Integer id = salesman.getId();
-        String name = salesman.getName();
-        Integer salary = salesman.getSalary();
-        Integer birthYear = salesman.getBirthYear();
+        Integer id = showroom.getId();
+        String name = showroom.getName();
+        String address = showroom.getAddress();
 
-        String sqlQuery = "UPDATE salesmen "
-                + "SET name = ?, salary = ?, birth_year = ? "
+        String sqlQuery = "UPDATE showrooms "
+                + "SET name = ?, address = ? "
                 + "WHERE id = ?;";
 
         try {
             stmt = connection.prepareStatement(sqlQuery);
             stmt.setString(1, name);
-            stmt.setInt(2, salary);
-            stmt.setInt(3, birthYear);
-            stmt.setInt(4, id);
+            stmt.setString(2, address);
+            stmt.setInt(3, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(this.getClass().getName() + " class caused a problem!");
@@ -124,7 +119,7 @@ public class SalesmanDao {
 
     public void delete(Integer id) throws DaoException {
 
-        String sqlQuery = "DELETE FROM salesmen "
+        String sqlQuery = "DELETE FROM showrooms "
                 + "WHERE id = ?;";
 
         try {
