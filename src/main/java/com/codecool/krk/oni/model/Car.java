@@ -7,15 +7,14 @@ public class Car {
     private String manufacturer;
     private String model;
     private String color;
-    // Change to Integer in db and here
-    private String yearOfProduction;
+    private Integer yearOfProduction;
     private Showroom showroom;
 
     public Car() {
     }
 
     public Car(Integer id, String manufacturer, String model, String color,
-               String yearOfProduction, Showroom showroom) {
+               Integer yearOfProduction, Showroom showroom) {
         this.id = id;
         this.manufacturer = manufacturer;
         this.model = model;
@@ -24,7 +23,7 @@ public class Car {
         this.showroom = showroom;
     }
 
-    public Car(String manufacturer, String model, String color, String yearOfProduction, Showroom showroom) {
+    public Car(String manufacturer, String model, String color, Integer yearOfProduction, Showroom showroom) {
         this.manufacturer = manufacturer;
         this.model = model;
         this.color = color;
@@ -64,11 +63,11 @@ public class Car {
         this.color = color;
     }
 
-    public String getYearOfProduction() {
+    public Integer getYearOfProduction() {
         return yearOfProduction;
     }
 
-    public void setYearOfProduction(String yearOfProduction) {
+    public void setYearOfProduction(Integer yearOfProduction) {
         this.yearOfProduction = yearOfProduction;
     }
 
