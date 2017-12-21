@@ -36,8 +36,6 @@ public class SalesmanServlet extends HttpServlet {
             e.printStackTrace();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            System.out.println("dupa");
         }
     }
 
