@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class SalesmanService {
@@ -33,9 +34,8 @@ public class SalesmanService {
     }
 
     public void postObject(String json) throws ClassCastException,
-            NoCompleteDataProvideException, DaoException , IOException {
-        Map<String, Object> jsonMap = objectMapper.readValue(json,
-                new TypeReference<Map<String,Object>>(){});
+            NoCompleteDataProvideException, DaoException {
+        Map<String, Object> jsonMap = mapJson(json);
 
         if (!jsonMap.containsKey("name") || !jsonMap.containsKey("salary") || !jsonMap.containsKey("birthYear")) {
             throw new NoCompleteDataProvideException("No all date for new salesman provided");
@@ -46,9 +46,8 @@ public class SalesmanService {
     }
 
     public void putObject(String json) throws ClassCastException,
-            NoSuchSalesmanException, NoCompleteDataProvideException, DaoException, IOException {
-        Map<String, Object> jsonMap = objectMapper.readValue(json,
-                new TypeReference<Map<String,Object>>(){});
+            NoSuchSalesmanException, NoCompleteDataProvideException, DaoException {
+        Map<String, Object> jsonMap = mapJson(json);
 
         if (!jsonMap.containsKey("id")) {
             throw new NoSuchSalesmanException("Salesman id not specified");
@@ -95,5 +94,18 @@ public class SalesmanService {
         salesman.setName((String) jsonMap.get("name"));
         salesman.setSalary((Integer) jsonMap.get("salary"));
         salesman.setBirthYear((Integer) jsonMap.get("birthYear"));
+    }
+
+    private Map<String, Object> mapJson(String json) {
+        Map<String, Object> jsonMap = new LinkedHashMap<>();
+
+        try {
+            jsonMap = objectMapper.readValue(json,
+                    new TypeReference<Map<String,Object>>(){});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return jsonMap;
     }
 }
