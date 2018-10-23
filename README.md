@@ -2,6 +2,10 @@
 
 ## Application usecases
 
+### Start application
+
+Start a server using: ``mvn jetty:run``
+
 ### Basic URL
 
 ``localhost:8080/``
